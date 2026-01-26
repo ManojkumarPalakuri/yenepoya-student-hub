@@ -21,20 +21,27 @@ app.set('trust proxy', 1);
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({
-    origin: function (origin, callback) {
-        // Allow requests with no origin (like mobile apps or curl requests)
-        if (!origin) return callback(null, true);
-        if (origin.startsWith('http://localhost')) {
-            return callback(null, true);
-        }
-        if (origin === process.env.FRONTEND_URL) {
-            return callback(null, true);
-        }
-        // return callback(new Error('Not allowed by CORS')); // stricter for prod
-        callback(null, true); // Permissive for dev
-    },
-    credentials: true
+origin: function (origin, callback) {
+    const allowedOrigins = [
+        'http://localhost:5173',
+        'http://localhost:5001',
+        process.env.FRONTEND_URL,
+        'https://yenepoya-student-hub.vercel.app',
+        'https://a-student-hub.vercel.app'
+    ];
+
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin) || origin.startsWith('http://localhost')) {
+        return callback(null, true);
+    }
+
+    // callback(new Error('Not allowed by CORS')); // Un-comment for strict mode
+    callback(null, true); // Keep permissive for now to prevent blocking
+},
+credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // Database Connection
