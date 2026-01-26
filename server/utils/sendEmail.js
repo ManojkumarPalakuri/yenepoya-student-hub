@@ -1,69 +1,48 @@
-const nodemailer = require('nodemailer');
+const axios = require('axios');
 
 const sendEmail = async (options) => {
-    // For development, we'll use a test account if no env vars are present
-    // or just log it if we can't connect.
-    console.log(`[EMAIL SERVICE] Attempting to send email to: ${options.to}`);
-
-    let transporter;
-
-    // Debugging: Check what the server sees
-    console.log('[DEBUG] SMTP Config:', {
-        host: process.env.SMTP_HOST,
-        port: process.env.SMTP_PORT,
-        email: process.env.SMTP_EMAIL,
-        hasPassword: !!process.env.SMTP_PASSWORD
-    });
-
-    if (process.env.SMTP_HOST) {
-        const port = parseInt(process.env.SMTP_PORT) || 465;
-        const isSecure = port === 465;
-
-        console.log(`[EMAIL SERVICE] Sending Mail via ${process.env.SMTP_HOST}:${port} (STARTTLS mode)`);
-
-        transporter = nodemailer.createTransport({
-            host: process.env.SMTP_HOST,
-            port: port,
-            secure: false, // Force STARTTLS
-            auth: {
-                user: process.env.SMTP_EMAIL,
-                pass: process.env.SMTP_PASSWORD
-            },
-            tls: {
-                rejectUnauthorized: false,
-                ciphers: 'SSLv3'
-            },
-            connectionTimeout: 60000,
-            greetingTimeout: 60000,
-            socketTimeout: 60000,
-            debug: true,
-            logger: true
-        });
-    } else {
-        // Fallback for Dev: Log to console + Ethereal (optional)
-        console.log("No SMTP credentials found. Using console log for email content.");
-        console.log("---------------------------------------------------");
-        console.log(`Subject: ${options.subject}`);
-        console.log(`To: ${options.to}`);
-        console.log(`HTML: ${options.html}`);
-        console.log("---------------------------------------------------");
+    // Check for API Key
+    if (!process.env.BREVO_API_KEY) {
+        console.error('[EMAIL ERROR] Missing BREVO_API_KEY in environment variables.');
         return;
     }
 
-    const message = {
-        from: `"Yenepoya Student Hub" <${process.env.SMTP_EMAIL || 'palakurimanoj1@gmail.com'}>`,
-        to: options.to,
+    // Brevo API Endpoint
+    const url = 'https://api.brevo.com/v3/smtp/email';
+
+    // Prepare Payload
+    const data = {
+        sender: {
+            name: process.env.FROM_NAME || 'Yenepoya Student Hub',
+            email: process.env.FROM_EMAIL || 'noreply@yenepoya.edu.in'
+        },
+        to: [
+            {
+                email: options.to
+            }
+        ],
         subject: options.subject,
-        html: options.html
+        htmlContent: options.html
     };
 
+    // Prepare Config
+    const config = {
+        headers: {
+            'accept': 'application/json',
+            'api-key': process.env.BREVO_API_KEY,
+            'content-type': 'application/json'
+        }
+    };
+
+    console.log(`[EMAIL SERVICE] Sending via Brevo API to: ${options.to}`);
+
     try {
-        const info = await transporter.sendMail(message);
-        console.log('Message sent: %s', info.messageId);
-        return info;
-    } catch (err) {
-        console.error('[EMAIL ERROR] SMTP Send Failed:', err);
-        throw err; // Re-throw so the route catch block can handle it
+        const response = await axios.post(url, data, config);
+        console.log('[EMAIL SERVICE] Email sent successfully. MessageId:', response.data.messageId);
+        return response.data;
+    } catch (error) {
+        console.error('[EMAIL ERROR] Brevo API Failed:', error.response ? error.response.data : error.message);
+        throw new Error(error.response?.data?.message || 'Email sending failed');
     }
 };
 
