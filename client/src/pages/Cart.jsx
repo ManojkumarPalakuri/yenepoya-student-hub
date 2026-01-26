@@ -13,7 +13,8 @@ const Cart = () => {
     const handleCheckout = async () => {
         setSubmitting(true);
         try {
-            await axios.post('http://localhost:5001/api/orders', {
+            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+            await axios.post(`${apiUrl}/api/orders`, {
                 items: cartItems.map(item => ({
                     product: item._id,
                     name: item.name,

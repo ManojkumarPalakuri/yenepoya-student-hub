@@ -22,6 +22,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 
 const AdminDashboard = () => {
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
     const [orders, setOrders] = useState([]);
     const [requests, setRequests] = useState([]);
     const [activeTab, setActiveTab] = useState('orders');
@@ -36,8 +37,8 @@ const AdminDashboard = () => {
         if (!background) setLoading(true);
         try {
             const [ordersRes, requestsRes] = await Promise.all([
-                axios.get('http://localhost:5001/api/orders'),
-                axios.get('http://localhost:5001/api/requests')
+                axios.get(`${apiUrl}/api/orders`),
+                axios.get(`${apiUrl}/api/requests`)
             ]);
             setOrders(ordersRes.data);
             setRequests(requestsRes.data);
@@ -60,7 +61,7 @@ const AdminDashboard = () => {
 
     const updateOrderStatus = async (id, status) => {
         try {
-            await axios.put(`http://localhost:5001/api/orders/${id}/status`, { status });
+            await axios.put(`${apiUrl}/api/orders/${id}/status`, { status });
             fetchData(true); // Silent refresh
         } catch (error) {
             alert('Failed to update status');
@@ -69,7 +70,7 @@ const AdminDashboard = () => {
 
     const updateRequestStatus = async (id, status) => {
         try {
-            await axios.put(`http://localhost:5001/api/requests/${id}/status`, { status });
+            await axios.put(`${apiUrl}/api/requests/${id}/status`, { status });
             fetchData(true); // Silent refresh
         } catch (error) {
             alert('Failed to update status');

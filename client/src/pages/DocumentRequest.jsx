@@ -21,7 +21,8 @@ const DocumentRequest = () => {
 
     const fetchRequests = async () => {
         try {
-            const { data } = await axios.get(`http://localhost:5001/api/requests/my-requests?t=${Date.now()}`, { withCredentials: true });
+            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+            const { data } = await axios.get(`${apiUrl}/api/requests/my-requests?t=${Date.now()}`, { withCredentials: true });
             setRequests(data);
         } catch (error) {
             console.error(error);
@@ -52,7 +53,8 @@ const DocumentRequest = () => {
 
         setSubmitting(true);
         try {
-            await axios.post('http://localhost:5001/api/requests', {
+            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+            await axios.post(`${apiUrl}/api/requests`, {
                 documentType: selectedDoc.title,
                 purpose
             }, { withCredentials: true });

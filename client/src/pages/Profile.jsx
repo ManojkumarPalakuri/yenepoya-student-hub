@@ -42,7 +42,8 @@ const Profile = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            await axios.put('http://localhost:5001/api/auth/profile', formData, { withCredentials: true });
+            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+            await axios.put(`${apiUrl}/api/auth/profile`, formData, { withCredentials: true });
             await checkUserLoggedIn(); // Refresh user context
             setIsEditing(false);
             toast.success('Profile updated successfully');

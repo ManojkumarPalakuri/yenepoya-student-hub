@@ -22,7 +22,8 @@ const Support = () => {
 
     const fetchQueries = async () => {
         try {
-            const { data } = await axios.get('http://localhost:5001/api/support/my-queries', { withCredentials: true });
+            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+            const { data } = await axios.get(`${apiUrl}/api/support/my-queries`, { withCredentials: true });
 
             // Client-side filtering
             const lastCleared = localStorage.getItem('supportHistoryClearedAt');
@@ -60,7 +61,8 @@ const Support = () => {
         e.preventDefault();
         setSubmitting(true);
         try {
-            await axios.post('http://localhost:5001/api/support', formData, { withCredentials: true });
+            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+            await axios.post(`${apiUrl}/api/support`, formData, { withCredentials: true });
 
             // Reset and refresh
             setFormData({ subject: '', category: 'General', description: '' });

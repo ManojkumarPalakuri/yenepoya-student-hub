@@ -16,7 +16,8 @@ const Products = () => {
 
     const fetchOrders = async () => {
         try {
-            const { data } = await axios.get(`http://localhost:5001/api/orders/myorders`, { withCredentials: true });
+            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+            const { data } = await axios.get(`${apiUrl}/api/orders/myorders`, { withCredentials: true });
             setOrders(data);
             setShowOrders(true);
         } catch (error) {
@@ -64,7 +65,8 @@ const Products = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const { data } = await axios.get(`http://localhost:5001/api/products?t=${Date.now()}`, { withCredentials: true });
+                const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+                const { data } = await axios.get(`${apiUrl}/api/products?t=${Date.now()}`, { withCredentials: true });
                 setProducts(data);
             } catch (error) {
                 console.error('Error fetching products:', error);

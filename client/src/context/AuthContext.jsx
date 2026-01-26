@@ -11,10 +11,8 @@ export const AuthProvider = ({ children }) => {
 
     const checkUserLoggedIn = async () => {
         try {
-            // Using a hack for now since we don't have a dedicated "verify" endpoint ready, 
-            // but we can use /profile if cookie exists
-            // We need to set axios defaults to include credentials
-            const { data } = await axios.get(`http://localhost:5001/api/auth/profile?t=${Date.now()}`, { withCredentials: true });
+            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+            const { data } = await axios.get(`${apiUrl}/api/auth/profile?t=${Date.now()}`, { withCredentials: true });
             setUser(data);
         } catch (error) {
             setUser(null);
@@ -34,7 +32,8 @@ export const AuthProvider = ({ children }) => {
     };
 
     const logout = async () => {
-        await axios.post('http://localhost:5001/api/auth/logout');
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+        await axios.post(`${apiUrl}/api/auth/logout`);
         setUser(null);
     };
 

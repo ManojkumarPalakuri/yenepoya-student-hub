@@ -29,7 +29,8 @@ const Navbar = () => {
     const fetchNotifications = async () => {
         if (!user) return;
         try {
-            const { data } = await axios.get('http://localhost:5001/api/notifications', { withCredentials: true });
+            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+            const { data } = await axios.get(`${apiUrl}/api/notifications`, { withCredentials: true });
             if (Array.isArray(data)) {
                 setNotifications(data);
                 setUnreadCount(data.filter(n => !n.isRead).length);
@@ -47,7 +48,8 @@ const Navbar = () => {
         setNotifications([]);
         setUnreadCount(0);
         try {
-            await axios.delete('http://localhost:5001/api/notifications', { withCredentials: true });
+            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+            await axios.delete(`${apiUrl}/api/notifications`, { withCredentials: true });
         } catch (error) {
             console.error('Error clearing notifications:', error);
         }
