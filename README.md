@@ -8,7 +8,7 @@
 
 ## 📖 About The Project
 
-The **Yenepoya Student Hub** is a modern, responsive web application designed to centralize student campus life. Built with a "SaaS-first" design philosophy, it moves away from traditional, clunky academic portals to offer a sleek, dark-mode enabled, and highly interactive user experience.
+The **Yenepoya Student Hub** is a modern, responsive web application designed to centralize student campus life. it moves away from traditional, clunky academic portals to offer a sleek, dark-mode enabled, and highly interactive user experience.
 
 Students can manage their profile, access digital identification, request official documents, order university merchandise, and stay updated with campus broadcasts—all from a single "Command Center."
 
