@@ -1,6 +1,6 @@
 # 🎓 Yenepoya Student Hub
 
-> **A Premium SaaS-style Student Portal for Academic Management, Digital Identity, and Campus Services.**
+> **A Premium Student Portal for Academic Management, Digital Identity, and Campus Services.**
 
 ![Status](https://img.shields.io/badge/Status-Active-success)
 ![Stack](https://img.shields.io/badge/Stack-MERN-blue)
