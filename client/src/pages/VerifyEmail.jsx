@@ -23,7 +23,7 @@ const VerifyEmail = () => {
 
         try {
             const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-            const res = await axios.post(`${apiUrl}/api/auth/verify-otp`, { email, otp });
+            const res = await axios.post(`${apiUrl}/api/auth/verify-otp`, { email, otp }, { withCredentials: true });
             setSuccess('Account verified! Logging you in...');
 
             // Auto login logic: Since the backend returns a token on verification, we can technically use it.

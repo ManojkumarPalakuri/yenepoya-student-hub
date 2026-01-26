@@ -18,12 +18,12 @@ const Cart = () => {
                 items: cartItems.map(item => ({
                     product: item._id,
                     name: item.name,
-                    size: item.selectedSize,
+                    price: item.price,
                     quantity: item.quantity,
-                    price: item.price
+                    size: item.size
                 })),
                 totalAmount: total
-            });
+            }, { withCredentials: true });
             clearCart();
             setShowSuccess(true);
         } catch (error) {
