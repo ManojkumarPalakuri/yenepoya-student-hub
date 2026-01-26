@@ -41,7 +41,8 @@ app.use(cors({
         // callback(new Error('Not allowed by CORS')); // Un-comment for strict mode
         callback(null, true); // Keep permissive for now to prevent blocking
     },
-    credentials: true
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // Database Connection
