@@ -64,7 +64,7 @@ router.post('/register', async (req, res) => {
         try {
             await sendEmail({
                 to: email,
-                subject: 'Yenepoya Portal - Verify your email',
+                subject: 'Yenepoya Student Hub - Verify your email',
                 html: message
             });
 
@@ -291,7 +291,7 @@ router.post('/forgot-password', async (req, res) => {
 
         await sendEmail({
             to: email,
-            subject: 'Yenepoya Portal - Reset Password',
+            subject: 'Yenepoya Student Hub - Reset Password',
             html: message
         });
 
