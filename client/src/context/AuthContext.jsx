@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
 
     const logout = async () => {
         const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-        await axios.post(`${apiUrl}/api/auth/logout`);
+        await axios.post(`${apiUrl}/api/auth/logout`, {}, { withCredentials: true });
         setUser(null);
     };
 

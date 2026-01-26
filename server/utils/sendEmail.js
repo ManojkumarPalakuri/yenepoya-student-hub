@@ -16,13 +16,16 @@ const sendEmail = async (options) => {
     });
 
     if (process.env.SMTP_HOST) {
+        const isGmail = process.env.SMTP_HOST.includes('gmail');
         transporter = nodemailer.createTransport({
-            host: process.env.SMTP_HOST,
-            port: process.env.SMTP_PORT,
+            ...(isGmail ? { service: 'gmail' } : { host: process.env.SMTP_HOST, port: process.env.SMTP_PORT }),
             auth: {
                 user: process.env.SMTP_EMAIL,
                 pass: process.env.SMTP_PASSWORD
-            }
+            },
+            connectionTimeout: 10000, // 10 seconds
+            greetingTimeout: 10000,
+            socketTimeout: 15000
         });
     } else {
         // Fallback for Dev: Log to console + Ethereal (optional)
