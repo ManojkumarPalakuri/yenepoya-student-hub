@@ -23,7 +23,7 @@ const DocumentRequest = () => {
 
     const fetchRequests = async () => {
         try {
-            const res = await axios.get(`${API_URL}/api/requests/myrequests`, { withCredentials: true });
+            const res = await axios.get(`${API_URL}/api/requests/my-requests`, { withCredentials: true });
             setRequests(res.data);
         } catch (error) {
             console.error(error);
