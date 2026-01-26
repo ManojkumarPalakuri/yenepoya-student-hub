@@ -61,7 +61,8 @@ router.post('/', protect, async (req, res) => {
                 html: emailContent
             });
         } catch (e) {
-            console.error('Email failed to send:', e);
+            console.error('Email failed to send:', e.response ? e.response.data : e.message);
+            // Optional: Don't fail the request, but log it clearly
         }
 
         res.status(201).json(createdQuery);
