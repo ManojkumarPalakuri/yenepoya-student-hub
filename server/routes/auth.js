@@ -298,7 +298,8 @@ router.post('/forgot-password', async (req, res) => {
         res.status(200).json({ message: 'OTP sent to email', email });
 
     } catch (error) {
-        res.status(500).json({ message: 'Server Error' });
+        console.error('Forgot Password SMTP Error:', error);
+        res.status(500).json({ message: 'Email service failure. Please check SMTP settings.' });
     }
 });
 

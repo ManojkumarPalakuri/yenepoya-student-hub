@@ -42,8 +42,14 @@ const sendEmail = async (options) => {
         html: options.html
     };
 
-    const info = await transporter.sendMail(message);
-    console.log('Message sent: %s', info.messageId);
+    try {
+        const info = await transporter.sendMail(message);
+        console.log('Message sent: %s', info.messageId);
+        return info;
+    } catch (err) {
+        console.error('[EMAIL ERROR] SMTP Send Failed:', err);
+        throw err; // Re-throw so the route catch block can handle it
+    }
 };
 
 module.exports = sendEmail;
