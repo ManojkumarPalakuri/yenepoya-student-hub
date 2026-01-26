@@ -1,0 +1,65 @@
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const dotenv = require('dotenv');
+const cookieParser = require('cookie-parser');
+
+const path = require('path');
+dotenv.config({ path: path.resolve(__dirname, '.env'), override: true });
+
+const app = express();
+const PORT = process.env.PORT || 5001; // Default to 5001 if env missing
+console.log('Current Working Directory:', process.cwd());
+console.log('Using PORT:', PORT);
+
+// Middleware
+app.use(express.json());
+app.use(cookieParser());
+app.use(cors({
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        if (origin.startsWith('http://localhost')) {
+            return callback(null, true);
+        }
+        if (origin === process.env.FRONTEND_URL) {
+            return callback(null, true);
+        }
+        // return callback(new Error('Not allowed by CORS')); // stricter for prod
+        callback(null, true); // Permissive for dev
+    },
+    credentials: true
+}));
+
+// Database Connection
+console.log('Attempting to connect to MongoDB URI:', process.env.MONGO_URI);
+mongoose.connect(process.env.MONGO_URI)
+    .then(() => console.log('MongoDB Connected'))
+    .catch(err => console.error('MongoDB Connection Error:', err));
+
+// Routes (Placeholder)
+app.get('/', (req, res) => {
+    res.send('Yenepoya University E-Commerce API');
+});
+
+// Import Routes
+const authRoutes = require('./routes/auth');
+const productRoutes = require('./routes/products');
+const orderRoutes = require('./routes/orders');
+const requestRoutes = require('./routes/requests');
+const supportRoutes = require('./routes/support');
+const notificationRoutes = require('./routes/notifications');
+const cartRoutes = require('./routes/cart');
+
+// Use Routes (Commented out until files exist)
+app.use('/api/auth', authRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/requests', requestRoutes);
+app.use('/api/support', supportRoutes);
+app.use('/api/notifications', notificationRoutes);
+app.use('/api/cart', cartRoutes);
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
