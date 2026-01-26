@@ -28,7 +28,17 @@ const Cart = () => {
             setShowSuccess(true);
         } catch (error) {
             console.error('Order failed:', error);
-            alert('Failed to place order. Please try again.');
+
+            // Handle Profile Gate
+            if (error.response && error.response.status === 403 && error.response.data.code === 'PROFILE_INCOMPLETE') {
+                const missing = error.response.data.missingFields.join(', ');
+                if (confirm(`Please complete your profile first!\n\nMissing: ${missing}\n\nGo to Profile Settings now?`)) {
+                    navigate('/profile');
+                }
+                return;
+            }
+
+            alert(error.response?.data?.message || 'Failed to place order. Please try again.');
         } finally {
             setSubmitting(false);
         }

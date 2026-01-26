@@ -20,6 +20,21 @@ router.post('/', protect, async (req, res) => {
         return res.status(400).json({ message: 'No order items' });
     }
 
+    // MANDATORY PROFILE CHECK
+    const { registerNumber, campusId, batchYear, classSection } = req.user;
+    if (!registerNumber || !campusId || !batchYear || !classSection) {
+        return res.status(403).json({
+            message: 'Incomplete Profile',
+            code: 'PROFILE_INCOMPLETE',
+            missingFields: [
+                !registerNumber ? 'Register Number' : null,
+                !campusId ? 'Campus ID' : null,
+                !batchYear ? 'Batch' : null,
+                !classSection ? 'Class/Section' : null
+            ].filter(Boolean)
+        });
+    }
+
     try {
         const studentDetails = {
             name: req.user.name,
