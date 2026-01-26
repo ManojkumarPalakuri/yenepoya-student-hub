@@ -25,6 +25,7 @@ const sendEmail = async (options) => {
                 port: process.env.SMTP_PORT,
                 secure: isSSL // true for 465, false for other ports
             }),
+            pool: true, // Reuse connections
             auth: {
                 user: process.env.SMTP_EMAIL,
                 pass: process.env.SMTP_PASSWORD
@@ -34,9 +35,9 @@ const sendEmail = async (options) => {
             },
             debug: true,
             logger: true,
-            connectionTimeout: 20000, // Increased to 20s
-            greetingTimeout: 20000,
-            socketTimeout: 25000
+            connectionTimeout: 30000,
+            greetingTimeout: 30000,
+            socketTimeout: 45000
         });
     } else {
         // Fallback for Dev: Log to console + Ethereal (optional)
