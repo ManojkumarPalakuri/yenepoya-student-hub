@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Mail, User, Lock, ArrowRight, Loader2, Command, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import axios from 'axios';
+import { API_URL } from '../config';
 
 const Signup = () => {
     const [email, setEmail] = useState('');

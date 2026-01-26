@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_URL } from '../config';
 import { useAuth } from '../context/AuthContext';
 import { Send, HelpCircle, MessageSquare, AlertCircle, CheckCircle, Clock, Search, Filter } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';

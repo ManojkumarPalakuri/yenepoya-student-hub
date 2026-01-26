@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, ArrowRight, Loader2, CheckCircle, KeyRound } from 'lucide-react';
 import axios from 'axios';
+import { API_URL } from '../config';
 
 const ForgotPassword = () => {
     const navigate = useNavigate();

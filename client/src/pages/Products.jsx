@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { API_URL } from '../config';
 import { useCart } from '../context/CartContext';
 import { Search, ShoppingBag, Filter, X, Zap, Package, Tag, Layers, ArrowRight, CheckCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';

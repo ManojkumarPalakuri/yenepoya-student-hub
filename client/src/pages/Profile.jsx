@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import axios from 'axios';
+import { API_URL } from '../config';
 import { useNavigate } from 'react-router-dom';
 import { User, LogOut, Save, BadgeCheck, Shield, Mail, Hash, Building, GraduationCap, MapPin, Briefcase, ArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
