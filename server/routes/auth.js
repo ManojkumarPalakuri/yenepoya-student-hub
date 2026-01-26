@@ -202,7 +202,9 @@ router.post('/login', async (req, res) => {
             batchYear: user.batchYear,
             classSection: user.classSection,
             floorBuilding: user.floorBuilding,
-            adviserName: user.adviserName
+            floorBuilding: user.floorBuilding,
+            adviserName: user.adviserName,
+            token
         });
 
     } catch (error) {
