@@ -22,30 +22,17 @@ export const AuthProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        }
-        axios.defaults.withCredentials = true; // Important for cookies (hybrid approach)
+        axios.defaults.withCredentials = true; // Important for cookies
         checkUserLoggedIn();
     }, []);
 
+    // Generic login that takes the user data directly (from backend response)
     const login = async (userData) => {
-        if (userData.token) {
-            localStorage.setItem('token', userData.token);
-            axios.defaults.headers.common['Authorization'] = `Bearer ${userData.token}`;
-        }
         setUser(userData);
     };
 
     const logout = async () => {
-        try {
-            await axios.post(`${API_URL}/api/auth/logout`, {}, { withCredentials: true });
-        } catch (error) {
-            console.error('Logout failed', error);
-        }
-        localStorage.removeItem('token');
-        delete axios.defaults.headers.common['Authorization'];
+        await axios.post(`${API_URL}/api/auth/logout`, {}, { withCredentials: true });
         setUser(null);
     };
 

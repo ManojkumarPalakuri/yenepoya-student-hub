@@ -6,15 +6,6 @@ const protect = async (req, res, next) => {
 
     if (req.cookies.token) {
         token = req.cookies.token;
-    } else if (
-        req.headers.authorization &&
-        req.headers.authorization.startsWith('Bearer')
-    ) {
-        try {
-            token = req.headers.authorization.split(' ')[1];
-        } catch (error) {
-            console.error('Bearer parsing failed');
-        }
     }
 
     if (!token) {
