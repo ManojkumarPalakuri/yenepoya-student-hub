@@ -82,7 +82,7 @@ router.post('/', protect, async (req, res) => {
 
         // Send Email
         try {
-            sendEmail({
+            await sendEmail({
                 to: process.env.SMTP_EMAIL,
                 subject: `New Order Received - ${createdOrder._id}`,
                 html: emailContent
@@ -142,7 +142,7 @@ router.put('/:id/status', protect, admin, async (req, res) => {
                 <p>Total Amount: ₹${order.totalAmount}</p>
             `;
             try {
-                sendEmail({
+                await sendEmail({
                     to: order.user.email,
                     subject: `Order Update: #${order._id} - ${status}`,
                     html: emailContent

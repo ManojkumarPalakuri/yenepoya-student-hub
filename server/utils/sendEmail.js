@@ -4,8 +4,8 @@ const sendEmail = async (options) => {
     // Check for API Key
     const apiKey = process.env.BREVO_API_KEY;
     if (!apiKey) {
-        console.error('[EMAIL ERROR] Missing BREVO_API_KEY in environment variables.');
-        throw new Error('BREVO_API_KEY is missing. Check Render environment variables.');
+        console.warn('[EMAIL WARNING] Missing BREVO_API_KEY. Email sending skipped.');
+        return null;
     }
 
     // Brevo API Endpoint

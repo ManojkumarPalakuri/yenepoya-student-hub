@@ -1,8 +1,6 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
-import Signup from './pages/Signup';
 import VerifyEmail from './pages/VerifyEmail';
-import ForgotPassword from './pages/ForgotPassword';
 import Profile from './pages/Profile';
 import Dashboard from './pages/Dashboard';
 import Products from './pages/Products';
@@ -18,7 +16,7 @@ import { Toaster } from 'react-hot-toast';
 
 const Layout = ({ children }) => {
   const location = useLocation();
-  const hideLayout = ['/login', '/signup', '/verify-email', '/forgot-password'].includes(location.pathname);
+  const hideLayout = ['/login', '/verify-email'].includes(location.pathname);
 
   if (hideLayout) {
     return children;
@@ -49,9 +47,9 @@ function App() {
         <Layout>
           <Routes>
             <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
+            <Route path="/signup" element={<Navigate to="/login" replace />} />
             <Route path="/verify-email" element={<VerifyEmail />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/forgot-password" element={<Navigate to="/login" replace />} />
 
             {/* Protected Routes */}
             <Route element={<PrivateRoute />}>

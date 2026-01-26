@@ -17,7 +17,8 @@ import {
     DollarSign,
     Box,
     AlertCircle,
-    X
+    X,
+    Loader2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -27,6 +28,7 @@ const AdminDashboard = () => {
     const [requests, setRequests] = useState([]);
     const [activeTab, setActiveTab] = useState('orders');
     const [loading, setLoading] = useState(true);
+    const [loadingAction, setLoadingAction] = useState(null); // { id: string, type: string }
     const [stats, setStats] = useState({ totalOrders: 0, pendingOrders: 0, totalRequests: 0, revenue: 0 });
 
     useEffect(() => {
@@ -60,20 +62,26 @@ const AdminDashboard = () => {
     };
 
     const updateOrderStatus = async (id, status) => {
+        setLoadingAction({ id, type: status });
         try {
             await axios.put(`${apiUrl}/api/orders/${id}/status`, { status }, { withCredentials: true });
-            fetchData(true); // Silent refresh
+            await fetchData(true); // Silent refresh
         } catch (error) {
             alert('Failed to update status');
+        } finally {
+            setLoadingAction(null);
         }
     };
 
     const updateRequestStatus = async (id, status) => {
+        setLoadingAction({ id, type: status });
         try {
             await axios.put(`${apiUrl}/api/requests/${id}/status`, { status }, { withCredentials: true });
-            fetchData(true); // Silent refresh
+            await fetchData(true); // Silent refresh
         } catch (error) {
             alert('Failed to update status');
+        } finally {
+            setLoadingAction(null);
         }
     };
 
@@ -236,9 +244,14 @@ const AdminDashboard = () => {
                                                             )}
                                                             <button
                                                                 onClick={() => updateOrderStatus(order._id, 'Completed')}
-                                                                className="px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white hover:bg-blue-500 shadow-lg shadow-blue-500/20 dark:shadow-blue-900/20 transition-all flex items-center gap-1.5"
+                                                                disabled={loadingAction?.id === order._id}
+                                                                className="px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white hover:bg-blue-500 shadow-lg shadow-blue-500/20 dark:shadow-blue-900/20 transition-all flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
                                                             >
-                                                                Complete <ArrowUpRight size={10} />
+                                                                {loadingAction?.id === order._id && loadingAction?.type === 'Completed' ? (
+                                                                    <>Processing <Loader2 size={10} className="animate-spin" /></>
+                                                                ) : (
+                                                                    <>Complete <ArrowUpRight size={10} /></>
+                                                                )}
                                                             </button>
                                                         </>
                                                     ) : (
@@ -302,9 +315,14 @@ const AdminDashboard = () => {
                                                 {req.status === 'Approved' && (
                                                     <button
                                                         onClick={() => updateRequestStatus(req._id, 'Completed')}
-                                                        className="px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 text-white hover:bg-emerald-500 shadow-lg shadow-emerald-500/20 dark:shadow-emerald-900/20 transition-all"
+                                                        disabled={loadingAction?.id === req._id}
+                                                        className="px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 text-white hover:bg-emerald-500 shadow-lg shadow-emerald-500/20 dark:shadow-emerald-900/20 transition-all flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
                                                     >
-                                                        Mark Done
+                                                        {loadingAction?.id === req._id && loadingAction?.type === 'Completed' ? (
+                                                            <>Updating <Loader2 size={10} className="animate-spin" /></>
+                                                        ) : (
+                                                            <>Mark Done</>
+                                                        )}
                                                     </button>
                                                 )}
                                                 {['Completed', 'Rejected'].includes(req.status) && (
