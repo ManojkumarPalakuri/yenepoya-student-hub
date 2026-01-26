@@ -7,7 +7,6 @@ const sendEmail = async (options) => {
         console.error('[EMAIL ERROR] Missing BREVO_API_KEY in environment variables.');
         throw new Error('BREVO_API_KEY is missing. Check Render environment variables.');
     }
-    console.log(`[DEBUG] Loaded API Key starting with: ${apiKey.substring(0, 10)}...`);
 
     // Brevo API Endpoint
     const url = 'https://api.brevo.com/v3/smtp/email';
