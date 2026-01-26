@@ -22,17 +22,30 @@ export const AuthProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        axios.defaults.withCredentials = true; // Important for cookies
+        const token = localStorage.getItem('token');
+        if (token) {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        }
+        axios.defaults.withCredentials = true; // Important for cookies (hybrid approach)
         checkUserLoggedIn();
     }, []);
 
-    // Generic login that takes the user data directly (from backend response)
     const login = async (userData) => {
+        if (userData.token) {
+            localStorage.setItem('token', userData.token);
+            axios.defaults.headers.common['Authorization'] = `Bearer ${userData.token}`;
+        }
         setUser(userData);
     };
 
     const logout = async () => {
-        await axios.post(`${API_URL}/api/auth/logout`, {}, { withCredentials: true });
+        try {
+            await axios.post(`${API_URL}/api/auth/logout`, {}, { withCredentials: true });
+        } catch (error) {
+            console.error('Logout failed', error);
+        }
+        localStorage.removeItem('token');
+        delete axios.defaults.headers.common['Authorization'];
         setUser(null);
     };
 
