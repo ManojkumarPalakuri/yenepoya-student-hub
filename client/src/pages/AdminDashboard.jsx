@@ -65,7 +65,7 @@ const AdminDashboard = () => {
     const updateOrderStatus = async (id, status) => {
         setLoadingAction({ id, type: status });
         try {
-            await axios.put(`${apiUrl}/api/orders/${id}/status`, { status }, { withCredentials: true });
+            await axios.put(`${API_URL}/api/orders/${id}/status`, { status }, { withCredentials: true });
             await fetchData(true); // Silent refresh
         } catch (error) {
             alert('Failed to update status');
@@ -77,7 +77,7 @@ const AdminDashboard = () => {
     const updateRequestStatus = async (id, status) => {
         setLoadingAction({ id, type: status });
         try {
-            await axios.put(`${apiUrl}/api/requests/${id}/status`, { status }, { withCredentials: true });
+            await axios.put(`${API_URL}/api/requests/${id}/status`, { status }, { withCredentials: true });
             await fetchData(true); // Silent refresh
         } catch (error) {
             alert('Failed to update status');
