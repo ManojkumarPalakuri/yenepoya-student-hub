@@ -60,7 +60,15 @@ const Products = () => {
         setSelectedSize('');
     };
 
-    const sizes = ['S', 'M', 'L', 'XL', 'XXL', '38', '40', '42', '44'];
+    const getProductSizes = (product) => {
+        if (!product) return [];
+        const name = product.name.toLowerCase();
+        if (name.includes('shoe') || name.includes('crocs') || name.includes('sandal')) {
+            return ['4 UK', '5 UK', '6 UK', '7 UK', '8 UK', '9 UK', '10 UK', '11 UK', '12 UK'];
+        }
+        // Default for Uniforms/Shirts/Pants
+        return ['S', 'M', 'L', 'XL', 'XXL', '38', '40', '42', '44'];
+    };
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -270,7 +278,7 @@ const Products = () => {
                                 </div>
 
                                 <div className="grid grid-cols-4 gap-2 mb-6">
-                                    {sizes.map(size => (
+                                    {getProductSizes(selectedProduct).map(size => (
                                         <button
                                             key={size}
                                             onClick={() => setSelectedSize(size)}
