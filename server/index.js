@@ -8,7 +8,7 @@ const path = require('path');
 dotenv.config({ path: path.resolve(__dirname, '.env'), override: true });
 
 const app = express();
-const PORT = process.env.PORT || 5001; // Default to 5001 if env missing
+const PORT = process.env.PORT || 5000; // Default to 5000 if env missing
 console.log('Current Working Directory:', process.cwd());
 console.log('Using PORT:', PORT);
 
