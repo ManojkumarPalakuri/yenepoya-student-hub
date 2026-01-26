@@ -26,7 +26,7 @@ const Signup = () => {
 
         try {
             const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-            const res = await axios.post(`${apiUrl}/api/auth/register`, { name, email, password }, { withCredentials: true });
+            const res = await axios.post(`${apiUrl}/api/auth/register`, { name, email, password }, { withCredentials: true, timeout: 15000 });
             navigate('/verify-email', { state: { email } });
         } catch (err) {
             setError(err.response?.data?.message || 'Signup failed. Try again.');
