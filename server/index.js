@@ -42,7 +42,11 @@ mongoose.connect(process.env.MONGO_URI)
 
 // Routes (Placeholder)
 app.get('/', (req, res) => {
-    res.send('Yenepoya University E-Commerce API');
+    res.json({
+        status: 'Online',
+        service: 'Yenepoya Student Hub API',
+        deployedAt: new Date().toISOString()
+    });
 });
 
 // Import Routes
