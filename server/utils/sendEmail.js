@@ -13,8 +13,8 @@ const sendEmail = async (options) => {
     // Prepare Payload
     const data = {
         sender: {
-            name: process.env.FROM_NAME || 'Yenepoya Student Hub',
-            email: process.env.FROM_EMAIL || 'noreply@yenepoya.edu.in'
+            name: process.env.FROM_NAME,
+            email: process.env.FROM_EMAIL // MUST match verified sender in Brevo
         },
         to: [
             {
