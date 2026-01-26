@@ -16,28 +16,29 @@ const sendEmail = async (options) => {
     });
 
     if (process.env.SMTP_HOST) {
-        const isGmail = process.env.SMTP_HOST.includes('gmail');
-        const isSSL = process.env.SMTP_PORT == 465;
+        const port = parseInt(process.env.SMTP_PORT) || 465;
+        const isSecure = port === 465;
+
+        console.log(`[EMAIL SERVICE] Initializing SMTP: Host: ${process.env.SMTP_HOST}, Port: ${port}, Secure: ${isSecure}`);
 
         transporter = nodemailer.createTransport({
-            ...(isGmail ? { service: 'gmail' } : {
-                host: process.env.SMTP_HOST,
-                port: process.env.SMTP_PORT,
-                secure: isSSL // true for 465, false for other ports
-            }),
-            pool: true, // Reuse connections
+            host: process.env.SMTP_HOST,
+            port: port,
+            secure: isSecure, // true for 465, false for 587
+            pool: true,
             auth: {
                 user: process.env.SMTP_EMAIL,
                 pass: process.env.SMTP_PASSWORD
             },
             tls: {
-                rejectUnauthorized: false
+                rejectUnauthorized: false,
+                minVersion: 'TLSv1.2'
             },
+            connectionTimeout: 40000, // 40 seconds for slow cloud networks
+            greetingTimeout: 40000,
+            socketTimeout: 60000,
             debug: true,
-            logger: true,
-            connectionTimeout: 30000,
-            greetingTimeout: 30000,
-            socketTimeout: 45000
+            logger: true
         });
     } else {
         // Fallback for Dev: Log to console + Ethereal (optional)
