@@ -461,7 +461,7 @@ router.get('/test-email', async (req, res) => {
         res.status(500).json({
             message: 'SMTP Test Failed',
             error: error.message,
-            tip: 'Check Render environment variables and ensure Port is 465.'
+            tip: 'Check Render environment variables. Ensure BREVO_API_KEY starts with "xkeysib-".'
         });
     }
 });
