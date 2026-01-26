@@ -33,7 +33,7 @@ const Support = () => {
                 displayData = data.filter(q => new Date(q.createdAt).getTime() > parseInt(lastCleared));
             }
 
-            setTickets(displayData);
+            setQueries(displayData);
         } catch (error) {
             console.error('Error fetching queries:', error);
             toast.error('Failed to load support history');
@@ -44,7 +44,7 @@ const Support = () => {
 
     const clearHistory = () => {
         if (window.confirm("Are you sure you want to clear your ticket history view? This won't delete the tickets from the server.")) {
-            setTickets([]);
+            setQueries([]);
             localStorage.setItem('supportHistoryClearedAt', Date.now().toString());
             toast.success('History cleared successfully');
         }
