@@ -37,7 +37,8 @@ const ForgotPassword = () => {
         setError('');
 
         try {
-            await axios.post('http://localhost:5001/api/auth/reset-password', { email, otp, password });
+            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+            await axios.post(`${apiUrl}/api/auth/reset-password`, { email, otp, password }, { withCredentials: true });
             setSuccess('Password reset successfully! Redirecting...');
             setTimeout(() => {
                 navigate('/login');

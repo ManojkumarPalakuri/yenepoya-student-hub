@@ -21,7 +21,7 @@ const Login = () => {
 
         try {
             const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-            const res = await axios.post(`${apiUrl}/api/auth/login`, { email, password });
+            const res = await axios.post(`${apiUrl}/api/auth/login`, { email, password }, { withCredentials: true });
 
             // Update Auth Context state
             await login(res.data);
