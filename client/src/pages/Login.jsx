@@ -24,6 +24,7 @@ import {
     Sparkles
 } from 'lucide-react';
 import axios from 'axios';
+import { API_URL } from '../config';
 
 const Login = () => {
     // View state: 'login' | 'signup' | 'forgot-password' | 'reset-password'
@@ -66,8 +67,7 @@ const Login = () => {
         setError('');
 
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-            const res = await axios.post(`${apiUrl}/api/auth/login`, { email, password }, { withCredentials: true, timeout: 15000 });
+            const res = await axios.post(`${API_URL}/api/auth/login`, { email, password }, { withCredentials: true, timeout: 15000 });
 
             await login(res.data);
 
@@ -97,8 +97,7 @@ const Login = () => {
         }
 
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-            const res = await axios.post(`${apiUrl}/api/auth/register`, { name, email, password }, { withCredentials: true, timeout: 15000 });
+            const res = await axios.post(`${API_URL}/api/auth/register`, { name, email, password }, { withCredentials: true, timeout: 15000 });
             navigate('/verify-email', { state: { email } });
         } catch (err) {
             console.error('Signup Error:', err);
@@ -115,8 +114,7 @@ const Login = () => {
         setSuccess('');
 
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-            await axios.post(`${apiUrl}/api/auth/forgot-password`, { email }, { withCredentials: true, timeout: 15000 });
+            await axios.post(`${API_URL}/api/auth/forgot-password`, { email }, { withCredentials: true, timeout: 15000 });
             setSuccess('OTP sent to your email.');
             switchView('reset-password', 1);
         } catch (err) {
@@ -133,8 +131,7 @@ const Login = () => {
         setSuccess('');
 
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-            await axios.post(`${apiUrl}/api/auth/reset-password`, { email, otp, password: newPassword }, { withCredentials: true });
+            await axios.post(`${API_URL}/api/auth/reset-password`, { email, otp, password: newPassword }, { withCredentials: true });
             setSuccess('Password updated successfully!');
             setTimeout(() => {
                 switchView('login', -1);

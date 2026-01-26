@@ -8,6 +8,8 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 
+import { API_URL } from '../config';
+
 const Navbar = () => {
     const { user, logout } = useAuth();
     const { theme, toggleTheme } = useTheme();
@@ -29,8 +31,7 @@ const Navbar = () => {
     const fetchNotifications = async () => {
         if (!user) return;
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-            const { data } = await axios.get(`${apiUrl}/api/notifications`, { withCredentials: true });
+            const { data } = await axios.get(`${API_URL}/api/notifications`, { withCredentials: true });
             if (Array.isArray(data)) {
                 setNotifications(data);
                 setUnreadCount(data.filter(n => !n.isRead).length);

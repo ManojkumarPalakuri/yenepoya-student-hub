@@ -73,7 +73,7 @@ const Products = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+                const apiUrl = API_URL;
                 const { data } = await axios.get(`${apiUrl}/api/products?t=${Date.now()}`, { withCredentials: true });
                 setProducts(data);
             } catch (error) {

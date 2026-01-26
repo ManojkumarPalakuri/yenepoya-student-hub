@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import { API_URL } from '../config';
 
 const AuthContext = createContext();
 
@@ -11,8 +12,7 @@ export const AuthProvider = ({ children }) => {
 
     const checkUserLoggedIn = async () => {
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-            const { data } = await axios.get(`${apiUrl}/api/auth/profile?t=${Date.now()}`, { withCredentials: true });
+            const { data } = await axios.get(`${API_URL}/api/auth/profile?t=${Date.now()}`, { withCredentials: true });
             setUser(data);
         } catch (error) {
             setUser(null);
@@ -32,8 +32,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     const logout = async () => {
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-        await axios.post(`${apiUrl}/api/auth/logout`, {}, { withCredentials: true });
+        await axios.post(`${API_URL}/api/auth/logout`, {}, { withCredentials: true });
         setUser(null);
     };
 

@@ -42,7 +42,7 @@ const Profile = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+            const apiUrl = API_URL;
             await axios.put(`${apiUrl}/api/auth/profile`, formData, { withCredentials: true });
             await checkUserLoggedIn(); // Refresh user context
             setIsEditing(false);

@@ -22,8 +22,9 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+import { API_URL } from '../config';
+
 const AdminDashboard = () => {
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
     const [orders, setOrders] = useState([]);
     const [requests, setRequests] = useState([]);
     const [activeTab, setActiveTab] = useState('orders');
@@ -39,8 +40,8 @@ const AdminDashboard = () => {
         if (!background) setLoading(true);
         try {
             const [ordersRes, requestsRes] = await Promise.all([
-                axios.get(`${apiUrl}/api/orders`, { withCredentials: true }),
-                axios.get(`${apiUrl}/api/requests`, { withCredentials: true })
+                axios.get(`${API_URL}/api/orders`, { withCredentials: true }),
+                axios.get(`${API_URL}/api/requests`, { withCredentials: true })
             ]);
             setOrders(ordersRes.data);
             setRequests(requestsRes.data);

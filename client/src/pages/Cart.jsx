@@ -4,16 +4,18 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { API_URL } from '../config';
 
 const Cart = () => {
     const { cartItems, removeFromCart, updateQuantity, total, clearCart } = useCart();
     const [submitting, setSubmitting] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
+    const navigate = useNavigate(); // Added navigate hook
 
     const handleCheckout = async () => {
         setSubmitting(true);
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+            const apiUrl = API_URL;
             await axios.post(`${apiUrl}/api/orders`, {
                 items: cartItems.map(item => ({
                     product: item._id,

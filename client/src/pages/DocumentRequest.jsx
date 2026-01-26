@@ -4,6 +4,8 @@ import { FileText, ArrowRight, Clock, CheckCircle, XCircle, File, Sparkles, Acti
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 
+import { API_URL } from '../config';
+
 const DocumentRequest = () => {
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -21,9 +23,8 @@ const DocumentRequest = () => {
 
     const fetchRequests = async () => {
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-            const { data } = await axios.get(`${apiUrl}/api/requests/my-requests?t=${Date.now()}`, { withCredentials: true });
-            setRequests(data);
+            const res = await axios.get(`${API_URL}/api/requests/myrequests`, { withCredentials: true });
+            setRequests(res.data);
         } catch (error) {
             console.error(error);
         } finally {

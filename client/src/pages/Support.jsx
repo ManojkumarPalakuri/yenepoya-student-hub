@@ -22,7 +22,7 @@ const Support = () => {
 
     const fetchQueries = async () => {
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+            const apiUrl = API_URL;
             const { data } = await axios.get(`${apiUrl}/api/support/my-queries`, { withCredentials: true });
 
             // Client-side filtering
@@ -32,7 +32,7 @@ const Support = () => {
                 displayData = data.filter(q => new Date(q.createdAt).getTime() > parseInt(lastCleared));
             }
 
-            setQueries(displayData);
+            setTickets(displayData);
         } catch (error) {
             console.error('Error fetching queries:', error);
             toast.error('Failed to load support history');
@@ -43,7 +43,7 @@ const Support = () => {
 
     const clearHistory = () => {
         if (window.confirm("Are you sure you want to clear your ticket history view? This won't delete the tickets from the server.")) {
-            setQueries([]);
+            setTickets([]);
             localStorage.setItem('supportHistoryClearedAt', Date.now().toString());
             toast.success('History cleared successfully');
         }
@@ -61,7 +61,7 @@ const Support = () => {
         e.preventDefault();
         setSubmitting(true);
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+            const apiUrl = API_URL;
             await axios.post(`${apiUrl}/api/support`, formData, { withCredentials: true });
 
             // Reset and refresh
