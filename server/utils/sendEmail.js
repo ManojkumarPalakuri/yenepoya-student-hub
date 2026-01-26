@@ -19,23 +19,22 @@ const sendEmail = async (options) => {
         const port = parseInt(process.env.SMTP_PORT) || 465;
         const isSecure = port === 465;
 
-        console.log(`[EMAIL SERVICE] Initializing SMTP: Host: ${process.env.SMTP_HOST}, Port: ${port}, Secure: ${isSecure}`);
+        console.log(`[EMAIL SERVICE] Sending Mail via ${process.env.SMTP_HOST}:${port} (STARTTLS mode)`);
 
         transporter = nodemailer.createTransport({
             host: process.env.SMTP_HOST,
             port: port,
-            secure: isSecure, // true for 465, false for 587
-            pool: true,
+            secure: false, // Force STARTTLS
             auth: {
                 user: process.env.SMTP_EMAIL,
                 pass: process.env.SMTP_PASSWORD
             },
             tls: {
                 rejectUnauthorized: false,
-                minVersion: 'TLSv1.2'
+                ciphers: 'SSLv3'
             },
-            connectionTimeout: 40000, // 40 seconds for slow cloud networks
-            greetingTimeout: 40000,
+            connectionTimeout: 60000,
+            greetingTimeout: 60000,
             socketTimeout: 60000,
             debug: true,
             logger: true
