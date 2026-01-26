@@ -74,7 +74,7 @@ router.post('/register', async (req, res) => {
             user.otp = undefined;
             user.otpExpires = undefined;
             await user.save();
-            return res.status(500).json({ message: 'Email could not be sent' });
+            return res.status(500).json({ message: error.message || 'Email could not be sent' });
         }
 
     } catch (error) {
@@ -299,7 +299,7 @@ router.post('/forgot-password', async (req, res) => {
 
     } catch (error) {
         console.error('Forgot Password SMTP Error:', error);
-        res.status(500).json({ message: 'Email service failure. Please check SMTP settings.' });
+        res.status(500).json({ message: error.message || 'Email service failure.' });
     }
 });
 
