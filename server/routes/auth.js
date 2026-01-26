@@ -445,4 +445,25 @@ const generateOTPEmailTemplate = (otp, title, description) => {
     `;
 };
 
+// @route   GET /api/auth/test-email
+// @desc    Test SMTP connectivity
+// @access  Public
+router.get('/test-email', async (req, res) => {
+    try {
+        await sendEmail({
+            to: process.env.SMTP_EMAIL,
+            subject: 'SMTP Test Connection',
+            html: '<h1>Connection Successful</h1><p>If you see this, your Render -> Gmail connectivity is working!</p>'
+        });
+        res.json({ message: 'Test email sent successfully! Check your inbox/spam.' });
+    } catch (error) {
+        console.error('Test Email Failure:', error);
+        res.status(500).json({
+            message: 'SMTP Test Failed',
+            error: error.message,
+            tip: 'Check Render environment variables and ensure Port is 465.'
+        });
+    }
+});
+
 module.exports = router;
