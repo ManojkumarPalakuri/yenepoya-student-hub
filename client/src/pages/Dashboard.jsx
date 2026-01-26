@@ -1,10 +1,18 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { ShoppingBag, FileText, User, Bell, ExternalLink, Calendar, MapPin, ArrowRight, CreditCard, Sparkles, Activity, ShieldCheck, Clock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Dashboard = () => {
     const { user } = useAuth();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (user && user.role === 'admin') {
+            navigate('/admin');
+        }
+    }, [user, navigate]);
 
     const announcements = [
         {

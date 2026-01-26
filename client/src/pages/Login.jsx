@@ -27,7 +27,9 @@ const Login = () => {
             await login(res.data);
 
             // Role-Based Redirect
-            if (res.data.role === 'admin') {
+            console.log('Login Success. Role:', res.data.role);
+
+            if (res.data.role && res.data.role.toLowerCase() === 'admin') {
                 navigate('/admin');
             } else {
                 navigate('/');
