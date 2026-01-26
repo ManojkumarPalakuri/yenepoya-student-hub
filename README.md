@@ -22,10 +22,10 @@ The project follows a **Monorepo-style MERN Architecture**:
 
 ```mermaid
 graph TD
-    User[User / Student] <--> |HTTPS| Client[React Client (Vite)]
-    Client <--> |REST API| Server[Express Server]
-    Server <--> |Mongoose| DB[(MongoDB)]
-    Server <--> |Nodemailer| Email[SMTP Email Service]
+    User["User / Student"] <--> |HTTPS| Client["React Client (Vite)"]
+    Client <--> |REST API| Server["Express Server"]
+    Server <--> |Mongoose| DB[("MongoDB")]
+    Server <--> |Nodemailer| Email["SMTP Email Service"]
 ```
 
 ## ✨ Key Features
