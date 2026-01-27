@@ -20,8 +20,11 @@ const ForgotPassword = () => {
         setIsLoading(true);
         setError('');
 
+
+
+
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+            const apiUrl = API_URL;
             await axios.post(`${apiUrl}/api/auth/forgot-password`, { email }, { withCredentials: true, timeout: 15000 });
             setSuccess('OTP sent to your email.');
             setStep(2);

@@ -35,11 +35,11 @@ const sendEmail = async (options) => {
         }
     };
 
-    console.log(`[EMAIL SERVICE] Sending via Brevo API to: ${options.to}`);
+
 
     try {
         const response = await axios.post(url, data, config);
-        console.log('[EMAIL SERVICE] Email sent successfully. MessageId:', response.data.messageId);
+
         return response.data;
     } catch (error) {
         console.error('[EMAIL ERROR] Brevo API Failed:', error.response ? error.response.data : error.message);

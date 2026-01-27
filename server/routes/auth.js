@@ -150,7 +150,7 @@ router.post('/verify-otp', async (req, res) => {
 router.post('/login', async (req, res) => {
     const { email, password, googleId } = req.body;
 
-    console.log('Login attempt:', { email, hasPassword: !!password, googleId });
+
 
     // Handle Google Login separately
     if (googleId) {
@@ -160,10 +160,10 @@ router.post('/login', async (req, res) => {
     try {
         const user = await User.findOne({ email }).select('+password');
 
-        console.log('User found:', !!user);
+
 
         if (!user) {
-            console.log('User not found in DB');
+
             return res.status(400).json({ message: 'Invalid credentials' });
         }
 
@@ -173,7 +173,7 @@ router.post('/login', async (req, res) => {
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
-        console.log('Password match:', isMatch);
+
 
         if (!isMatch) {
             return res.status(400).json({ message: 'Invalid credentials' });

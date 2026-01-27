@@ -104,57 +104,63 @@ const Cart = () => {
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     exit={{ opacity: 0, x: -20 }}
-                                    className="group bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 rounded-xl p-4 flex items-center gap-5 hover:border-gray-300 dark:hover:border-gray-700 transition-colors shadow-sm"
+                                    className="group bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5 hover:border-gray-300 dark:hover:border-gray-700 transition-colors shadow-sm"
                                 >
-                                    {/* Image */}
-                                    <div className="w-16 h-16 bg-gray-100 dark:bg-gray-900 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800 flex-shrink-0">
-                                        <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" />
-                                    </div>
-
-                                    {/* Details */}
-                                    <div className="flex-1 min-w-0">
-                                        <div className="flex justify-between items-start">
-                                            <h3 className="text-sm font-bold text-gray-900 dark:text-white truncate pr-4">{item.name}</h3>
-                                            <p className="font-mono text-sm font-bold text-gray-700 dark:text-slate-300">₹{item.price * item.quantity}</p>
+                                    {/* Image & Details Wrapper */}
+                                    <div className="flex items-start gap-4 w-full sm:w-auto sm:flex-1">
+                                        {/* Image */}
+                                        <div className="w-16 h-16 bg-gray-100 dark:bg-gray-900 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800 flex-shrink-0">
+                                            <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" />
                                         </div>
 
-                                        <div className="flex items-center gap-3 mt-1 text-xs text-gray-500 dark:text-slate-500 font-mono">
-                                            <span>UNIT: ₹{item.price}</span>
-                                            {item.selectedSize && (
-                                                <>
-                                                    <span className="w-1 h-1 bg-gray-400 dark:bg-gray-700 rounded-full"></span>
-                                                    <span className="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-gray-600 dark:text-slate-400 border border-gray-200 dark:border-gray-700">SIZE: {item.selectedSize}</span>
-                                                </>
-                                            )}
+                                        {/* Details */}
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex justify-between items-start">
+                                                <h3 className="text-sm font-bold text-gray-900 dark:text-white truncate pr-4">{item.name}</h3>
+                                                <p className="font-mono text-sm font-bold text-gray-700 dark:text-slate-300 shrink-0">₹{item.price * item.quantity}</p>
+                                            </div>
+
+                                            <div className="flex items-center gap-3 mt-1 text-xs text-gray-500 dark:text-slate-500 font-mono">
+                                                <span>UNIT: ₹{item.price}</span>
+                                                {item.selectedSize && (
+                                                    <>
+                                                        <span className="w-1 h-1 bg-gray-400 dark:bg-gray-700 rounded-full"></span>
+                                                        <span className="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-gray-600 dark:text-slate-400 border border-gray-200 dark:border-gray-700">SIZE: {item.selectedSize}</span>
+                                                    </>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
 
                                     {/* Actions */}
-                                    <div className="flex items-center gap-4">
-                                        <div className="flex items-center bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800">
+                                    <div className="flex items-center justify-between w-full sm:w-auto mt-2 pt-3 border-t border-gray-100 dark:border-gray-800 sm:mt-0 sm:pt-0 sm:border-0">
+                                        <span className="sm:hidden text-xs font-bold text-gray-500 uppercase tracking-wider">Quantity</span>
+                                        <div className="flex items-center gap-4 ml-auto sm:ml-0">
+                                            <div className="flex items-center bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800">
+                                                <button
+                                                    onClick={() => updateQuantity(item._id, item.quantity - 1, item.selectedSize)}
+                                                    disabled={item.quantity <= 1}
+                                                    className="p-1.5 text-gray-500 dark:text-slate-500 hover:text-gray-900 dark:hover:text-white disabled:opacity-30 transition-colors"
+                                                >
+                                                    <Minus size={14} />
+                                                </button>
+                                                <span className="w-8 text-center text-xs font-mono font-bold text-gray-900 dark:text-white">{item.quantity}</span>
+                                                <button
+                                                    onClick={() => updateQuantity(item._id, item.quantity + 1, item.selectedSize)}
+                                                    className="p-1.5 text-gray-500 dark:text-slate-500 hover:text-gray-900 dark:hover:text-white transition-colors"
+                                                >
+                                                    <Plus size={14} />
+                                                </button>
+                                            </div>
+
                                             <button
-                                                onClick={() => updateQuantity(item._id, item.quantity - 1, item.selectedSize)}
-                                                disabled={item.quantity <= 1}
-                                                className="p-1.5 text-gray-500 dark:text-slate-500 hover:text-gray-900 dark:hover:text-white disabled:opacity-30 transition-colors"
+                                                onClick={() => removeFromCart(item._id, item.selectedSize)}
+                                                className="p-2 text-gray-400 dark:text-slate-600 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-all"
+                                                title="Remove Item"
                                             >
-                                                <Minus size={14} />
-                                            </button>
-                                            <span className="w-8 text-center text-xs font-mono font-bold text-gray-900 dark:text-white">{item.quantity}</span>
-                                            <button
-                                                onClick={() => updateQuantity(item._id, item.quantity + 1, item.selectedSize)}
-                                                className="p-1.5 text-gray-500 dark:text-slate-500 hover:text-gray-900 dark:hover:text-white transition-colors"
-                                            >
-                                                <Plus size={14} />
+                                                <Trash2 size={16} />
                                             </button>
                                         </div>
-
-                                        <button
-                                            onClick={() => removeFromCart(item._id, item.selectedSize)}
-                                            className="p-2 text-gray-400 dark:text-slate-600 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-all"
-                                            title="Remove Item"
-                                        >
-                                            <Trash2 size={16} />
-                                        </button>
                                     </div>
                                 </motion.div>
                             ))}

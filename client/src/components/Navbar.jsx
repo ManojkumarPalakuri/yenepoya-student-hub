@@ -50,8 +50,28 @@ const Navbar = () => {
     const clearNotifications = async () => {
         setNotifications([]);
         setUnreadCount(0);
+
+
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+            const apiUrl = API_URL;
+            await axios.delete(`${apiUrl}/api/notifications`, { withCredentials: true });
+        } catch (error) {
+            console.error('Error clearing notifications:', error);
+        }
+    };
+
+    const handleSearch = async (e) => {
+        e.preventDefault(); // Prevent form submission refresh
+        if (!searchQuery.trim()) return;
+
+        console.log("Navbar: Searching for:", searchQuery);
+
+        setPlatformSearchLoading(true); // Start loading
+        // Optionally clear old results
+        setSearchResults([]);
+
+        try {
+            const apiUrl = API_URL;
             await axios.delete(`${apiUrl}/api/notifications`, { withCredentials: true });
         } catch (error) {
             console.error('Error clearing notifications:', error);

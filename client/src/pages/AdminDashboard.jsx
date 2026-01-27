@@ -31,6 +31,7 @@ const AdminDashboard = () => {
     const [loading, setLoading] = useState(true);
     const [loadingAction, setLoadingAction] = useState(null); // { id: string, type: string }
     const [stats, setStats] = useState({ totalOrders: 0, pendingOrders: 0, totalRequests: 0, revenue: 0 });
+    const [justCompleted, setJustCompleted] = useState({}); // { [orderId]: true }
 
     useEffect(() => {
         fetchData();
@@ -66,11 +67,27 @@ const AdminDashboard = () => {
         setLoadingAction({ id, type: status });
         try {
             await axios.put(`${API_URL}/api/orders/${id}/status`, { status }, { withCredentials: true });
-            await fetchData(true); // Silent refresh
+
+            if (status === 'Completed') {
+                setLoadingAction(null); // Clear loading immediately for animation
+                setJustCompleted(prev => ({ ...prev, [id]: true }));
+                setTimeout(() => {
+                    setJustCompleted(prev => {
+                        const newState = { ...prev };
+                        delete newState[id];
+                        return newState;
+                    });
+                    fetchData(true); // Silent refresh after animation
+                }, 2000);
+            } else {
+                await fetchData(true); // Silent refresh immediately
+            }
         } catch (error) {
             alert('Failed to update status');
         } finally {
-            setLoadingAction(null);
+            if (status !== 'Completed') {
+                setLoadingAction(null);
+            }
         }
     };
 
@@ -78,11 +95,27 @@ const AdminDashboard = () => {
         setLoadingAction({ id, type: status });
         try {
             await axios.put(`${API_URL}/api/requests/${id}/status`, { status }, { withCredentials: true });
-            await fetchData(true); // Silent refresh
+
+            if (status === 'Completed') {
+                setLoadingAction(null);
+                setJustCompleted(prev => ({ ...prev, [id]: true }));
+                setTimeout(() => {
+                    setJustCompleted(prev => {
+                        const newState = { ...prev };
+                        delete newState[id];
+                        return newState;
+                    });
+                    fetchData(true);
+                }, 2000);
+            } else {
+                await fetchData(true);
+            }
         } catch (error) {
             alert('Failed to update status');
         } finally {
-            setLoadingAction(null);
+            if (status !== 'Completed') {
+                setLoadingAction(null);
+            }
         }
     };
 
@@ -193,7 +226,15 @@ const AdminDashboard = () => {
                             >
                                 {orders.length === 0 && <div className="text-center py-10 text-xs font-mono text-gray-400 dark:text-slate-600">NO_ORDERS_FOUND</div>}
                                 {orders.map(order => (
-                                    <div key={order._id} className="group bg-white dark:bg-[#111827] rounded-xl border border-gray-200 dark:border-gray-800 p-5 hover:border-gray-300 dark:hover:border-gray-700 transition-all shadow-sm">
+                                    <motion.div
+                                        layout
+                                        key={order._id}
+                                        initial={{ opacity: 0, scale: 0.95 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.95 }}
+                                        transition={{ duration: 0.3 }}
+                                        className="group bg-white dark:bg-[#111827] rounded-xl border border-gray-200 dark:border-gray-800 p-5 hover:border-gray-300 dark:hover:border-gray-700 transition-all shadow-sm"
+                                    >
                                         <div className="flex flex-col lg:flex-row gap-6">
                                             {/* Left: Meta */}
                                             <div className="lg:w-1/3 min-w-[200px]">
@@ -249,17 +290,27 @@ const AdminDashboard = () => {
                                                                     Process
                                                                 </button>
                                                             )}
-                                                            <button
-                                                                onClick={() => updateOrderStatus(order._id, 'Completed')}
-                                                                disabled={loadingAction?.id === order._id}
-                                                                className="px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white hover:bg-blue-500 shadow-lg shadow-blue-500/20 dark:shadow-blue-900/20 transition-all flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
-                                                            >
-                                                                {loadingAction?.id === order._id && loadingAction?.type === 'Completed' ? (
-                                                                    <>Processing <Loader2 size={10} className="animate-spin" /></>
-                                                                ) : (
-                                                                    <>Complete <ArrowUpRight size={10} /></>
-                                                                )}
-                                                            </button>
+                                                            {justCompleted[order._id] ? (
+                                                                <motion.div
+                                                                    initial={{ scale: 0.8, opacity: 0 }}
+                                                                    animate={{ scale: 1, opacity: 1 }}
+                                                                    className="px-3 py-1.5 rounded-lg bg-green-50 dark:bg-green-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold border border-green-200 dark:border-green-500/20 flex items-center gap-1.5"
+                                                                >
+                                                                    <CheckCircle2 size={14} /> Done!
+                                                                </motion.div>
+                                                            ) : (
+                                                                <button
+                                                                    onClick={() => updateOrderStatus(order._id, 'Completed')}
+                                                                    disabled={loadingAction?.id === order._id}
+                                                                    className="px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white hover:bg-blue-500 shadow-lg shadow-blue-500/20 dark:shadow-blue-900/20 transition-all flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                                >
+                                                                    {loadingAction?.id === order._id && loadingAction?.type === 'Completed' ? (
+                                                                        <>Processing <Loader2 size={10} className="animate-spin" /></>
+                                                                    ) : (
+                                                                        <>Complete <ArrowUpRight size={10} /></>
+                                                                    )}
+                                                                </button>
+                                                            )}
                                                         </>
                                                     ) : (
                                                         <span className="text-xs font-bold text-gray-500 dark:text-slate-600 flex items-center gap-1">
@@ -269,7 +320,7 @@ const AdminDashboard = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </motion.div>
                                 ))}
                             </motion.div>
                         ) : (
@@ -282,7 +333,15 @@ const AdminDashboard = () => {
                             >
                                 {requests.length === 0 && <div className="text-center py-10 text-xs font-mono text-gray-400 dark:text-slate-600">NO_REQUESTS_FOUND</div>}
                                 {requests.map(req => (
-                                    <div key={req._id} className="bg-white dark:bg-[#111827] rounded-xl border border-gray-200 dark:border-gray-800 p-5 hover:border-gray-300 dark:hover:border-gray-700 transition-colors shadow-sm">
+                                    <motion.div
+                                        layout
+                                        key={req._id}
+                                        initial={{ opacity: 0, scale: 0.95 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.95 }}
+                                        transition={{ duration: 0.3 }}
+                                        className="bg-white dark:bg-[#111827] rounded-xl border border-gray-200 dark:border-gray-800 p-5 hover:border-gray-300 dark:hover:border-gray-700 transition-colors shadow-sm"
+                                    >
                                         <div className="flex flex-col sm:flex-row justify-between gap-4">
                                             <div className="space-y-2">
                                                 <div className="flex items-center gap-3">
@@ -320,17 +379,27 @@ const AdminDashboard = () => {
                                                     </>
                                                 )}
                                                 {req.status === 'Approved' && (
-                                                    <button
-                                                        onClick={() => updateRequestStatus(req._id, 'Completed')}
-                                                        disabled={loadingAction?.id === req._id}
-                                                        className="px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 text-white hover:bg-emerald-500 shadow-lg shadow-emerald-500/20 dark:shadow-emerald-900/20 transition-all flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
-                                                    >
-                                                        {loadingAction?.id === req._id && loadingAction?.type === 'Completed' ? (
-                                                            <>Updating <Loader2 size={10} className="animate-spin" /></>
-                                                        ) : (
-                                                            <>Mark Done</>
-                                                        )}
-                                                    </button>
+                                                    justCompleted[req._id] ? (
+                                                        <motion.div
+                                                            initial={{ scale: 0.8, opacity: 0 }}
+                                                            animate={{ scale: 1, opacity: 1 }}
+                                                            className="px-3 py-1.5 rounded-lg bg-green-50 dark:bg-green-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold border border-green-200 dark:border-green-500/20 flex items-center gap-1.5"
+                                                        >
+                                                            <CheckCircle2 size={14} /> Done!
+                                                        </motion.div>
+                                                    ) : (
+                                                        <button
+                                                            onClick={() => updateRequestStatus(req._id, 'Completed')}
+                                                            disabled={loadingAction?.id === req._id}
+                                                            className="px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 text-white hover:bg-emerald-500 shadow-lg shadow-emerald-500/20 dark:shadow-emerald-900/20 transition-all flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                        >
+                                                            {loadingAction?.id === req._id && loadingAction?.type === 'Completed' ? (
+                                                                <>Updating <Loader2 size={10} className="animate-spin" /></>
+                                                            ) : (
+                                                                <>Mark Done</>
+                                                            )}
+                                                        </button>
+                                                    )
                                                 )}
                                                 {['Completed', 'Rejected'].includes(req.status) && (
                                                     <span className="text-xs font-bold text-gray-500 dark:text-slate-600 flex items-center gap-1">
@@ -339,14 +408,14 @@ const AdminDashboard = () => {
                                                 )}
                                             </div>
                                         </div>
-                                    </div>
+                                    </motion.div>
                                 ))}
                             </motion.div>
                         )}
                     </AnimatePresence>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
 

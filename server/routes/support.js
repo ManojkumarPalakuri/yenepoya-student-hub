@@ -54,7 +54,7 @@ router.post('/', protect, async (req, res) => {
                     </div>
                 </div>
             `;
-            console.log(`Sending support email to Admin: ${process.env.EMAIL_USER}`);
+            // Log removed for production
             await sendEmail({
                 to: process.env.SMTP_EMAIL,
                 subject: `New Support Query - ${subject}`,
