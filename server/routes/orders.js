@@ -6,6 +6,8 @@ const { protect, admin } = require('../middleware/auth');
 const sendEmail = require('../utils/sendEmail');
 const Notification = require('../models/Notification');
 
+console.log('>>> Orders Route Loaded');
+
 // Helper for title casing names
 const titleCase = (str) => {
     if (!str) return '';

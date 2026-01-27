@@ -14,6 +14,7 @@ const app = express();
 const PORT = process.env.PORT || 5000; // Default to 5000 if env missing
 console.log('Current Working Directory:', process.cwd());
 console.log('Using PORT:', PORT);
+console.log('--- SERVER RESTART: v2.5 (Checking Routes) ---');
 
 // Trust Proxy for Render/Vercel
 app.set('trust proxy', 1);
