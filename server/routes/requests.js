@@ -77,7 +77,29 @@ router.post('/', protect, async (req, res) => {
 // @access  Private/Admin
 router.get('/', protect, admin, async (req, res) => {
     try {
-        const requests = await DocumentRequest.find({}).populate('user', 'name email').sort('-createdAt');
+        let requests = await DocumentRequest.find({})
+            .populate('user', 'name email')
+            .lean();
+
+        const statusPriority = {
+            'Pending': 1,
+            'Processing': 2,
+            'Approved': 3,
+            'Completed': 3,
+            'Rejected': 4
+        };
+
+        requests.sort((a, b) => {
+            const priorityA = statusPriority[a.status] || 99;
+            const priorityB = statusPriority[b.status] || 99;
+
+            if (priorityA !== priorityB) {
+                return priorityA - priorityB;
+            }
+            // Secondary sort: Newest first
+            return new Date(b.createdAt) - new Date(a.createdAt);
+        });
+
         res.json(requests);
     } catch (error) {
         res.status(500).json({ message: 'Server Error' });

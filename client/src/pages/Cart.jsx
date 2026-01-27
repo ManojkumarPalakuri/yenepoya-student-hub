@@ -22,7 +22,8 @@ const Cart = () => {
                     name: item.name,
                     price: item.price,
                     quantity: item.quantity,
-                    size: item.size
+
+                    size: item.selectedSize
                 })),
                 totalAmount: total
             }, { withCredentials: true });
@@ -62,11 +63,11 @@ const Cart = () => {
     }
 
     return (
-        <div className="w-full min-h-screen bg-gray-50 dark:bg-[#030712] text-gray-900 dark:text-slate-300 font-sans selection:bg-blue-500/30 pt-20">
-            <div className="max-w-5xl mx-auto px-6 md:px-8 pb-6 pt-2">
+        <div className="w-full min-h-screen bg-gray-50 dark:bg-[#030712] text-gray-900 dark:text-slate-300 font-sans selection:bg-blue-500/30 pt-20 overflow-x-hidden">
+            <div className="max-w-5xl mx-auto px-4 md:px-8 pb-6 pt-2">
 
                 {/* Header Row */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 pb-6 border-b border-gray-200 dark:border-gray-800">
+                <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 md:mb-8 pb-4 md:pb-6 border-b border-gray-200 dark:border-gray-800">
                     <div>
                         <div className="flex items-center gap-2 mb-1">
                             <span className="text-xs font-mono text-gray-500 dark:text-slate-500 uppercase tracking-widest">Portal / Checkout</span>
@@ -79,7 +80,7 @@ const Cart = () => {
                         </h1>
                     </div>
 
-                    <div className="flex items-center gap-8 bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 rounded-lg px-6 py-3 mt-4 md:mt-0 shadow-sm">
+                    <div className="flex items-center gap-4 md:gap-8 bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 rounded-lg px-4 md:px-6 py-3 mt-4 md:mt-0 shadow-sm">
                         <div className="text-right">
                             <div className="text-[10px] font-bold text-gray-500 dark:text-slate-500 uppercase tracking-wider mb-0.5">Total Items</div>
                             <div className="text-lg font-mono font-bold text-gray-900 dark:text-white leading-none">{cartItems.reduce((acc, item) => acc + item.quantity, 0)}</div>
@@ -162,7 +163,7 @@ const Cart = () => {
 
                     {/* Summary Card */}
                     <div className="lg:col-span-1">
-                        <div className="bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 rounded-xl p-6 sticky top-24 shadow-sm">
+                        <div className="bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 rounded-xl p-4 md:p-6 sticky top-24 shadow-sm">
                             <h2 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-6 flex items-center gap-2">
                                 <CreditCard size={16} className="text-blue-600 dark:text-blue-500" /> Payment Details
                             </h2>

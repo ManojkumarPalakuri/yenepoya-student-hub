@@ -4,8 +4,8 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 const dns = require('dns');
+// dns.setDefaultResultOrder('ipv4first'); // Reverting specific DNS settings to let OS handle it
 
-dns.setDefaultResultOrder('ipv4first');
 
 const path = require('path');
 dotenv.config({ path: path.resolve(__dirname, '.env'), override: true });

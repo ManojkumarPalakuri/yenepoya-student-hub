@@ -77,10 +77,16 @@ const Profile = () => {
                 <div className="flex border-l border-gray-200 dark:border-gray-700">
                     <button
                         onClick={async () => {
-                            toast.remove(t.id);
-                            await logout();
-                            navigate('/login');
-                            toast.success('Logged out successfully');
+                            toast.dismiss(t.id);
+                            const logoutPromise = async () => {
+                                await logout();
+                                navigate('/login');
+                            };
+                            toast.promise(logoutPromise(), {
+                                loading: 'Signing out...',
+                                success: 'Logged out successfully',
+                                error: 'Failed to sign out'
+                            });
                         }}
                         className="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-red-600 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-red-500"
                     >

@@ -3,10 +3,11 @@ import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import { useTheme } from '../context/ThemeContext';
 import { useCart } from '../context/CartContext';
-import { ShoppingCart, User, LayoutDashboard, Moon, Sun, Menu, X, Command, Activity, Bell, LogOut, ChevronDown, Settings, FileText, ShoppingBag, PhoneCall } from 'lucide-react';
+import { ShoppingCart, User, LayoutDashboard, Moon, Sun, Menu, X, Command, Activity, Bell, LogOut, ChevronDown, Settings, FileText, ShoppingBag, PhoneCall, Package, Headphones, Info, CheckCircle } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
+import { formatTimeAgo } from '../utils/helpers';
 
 import { API_URL } from '../config';
 
@@ -24,6 +25,7 @@ const Navbar = () => {
     const [notifications, setNotifications] = useState([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const [notificationOpen, setNotificationOpen] = useState(false);
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
     const notificationRef = useRef(null);
     const profileRef = useRef(null);
 
@@ -53,6 +55,17 @@ const Navbar = () => {
             await axios.delete(`${apiUrl}/api/notifications`, { withCredentials: true });
         } catch (error) {
             console.error('Error clearing notifications:', error);
+        }
+    };
+
+    const markAllRead = async () => {
+        if (unreadCount === 0) return;
+        setUnreadCount(0);
+        setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+        try {
+            await axios.put(`${API_URL}/api/notifications/mark-all-read`, {}, { withCredentials: true });
+        } catch (error) {
+            console.error('Error marking notifications as read:', error);
         }
     };
 
@@ -88,10 +101,16 @@ const Navbar = () => {
     }, []);
 
     const handleLogout = async () => {
-        setMenuOpen(false);
-        await logout();
-        navigate('/login');
-        toast.success('Logged out successfully');
+        setIsLoggingOut(true);
+        try {
+            setMenuOpen(false);
+            await logout();
+            navigate('/login');
+            toast.success('Logged out successfully');
+        } catch (error) {
+            console.error('Logout failed:', error);
+            setIsLoggingOut(false);
+        }
     };
 
     if (!user) return null;
@@ -166,12 +185,15 @@ const Navbar = () => {
                             <button
                                 onClick={() => {
                                     setNotificationOpen(!notificationOpen);
-                                    if (!notificationOpen) fetchNotifications();
+                                    if (!notificationOpen) {
+                                        fetchNotifications();
+                                        markAllRead();
+                                    }
                                 }}
                                 className={`w-9 h-9 flex items-center justify-center rounded-full transition-all relative ${notificationOpen ? 'bg-gray-100 dark:bg-white/10 text-gray-900 dark:text-white' : 'text-gray-500 dark:text-slate-500 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}
                             >
                                 <Bell size={18} />
-                                {notifications.some(n => ['Approved', 'Completed'].includes(n.status)) && (
+                                {unreadCount > 0 && (
                                     <span className="absolute top-2 right-2.5 w-1.5 h-1.5 bg-red-500 rounded-full border border-white dark:border-[#030712]"></span>
                                 )}
                             </button>
@@ -188,13 +210,51 @@ const Navbar = () => {
                                             <p className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider">Updates</p>
                                             <button onClick={clearNotifications} className="text-[10px] text-red-500 font-bold uppercase tracking-wider hover:underline">Clear All</button>
                                         </div>
-                                        <div className="max-h-64 overflow-y-auto">
-                                            {notifications.length === 0 ? <div className="p-4 text-center text-xs text-gray-500">No recent activity</div> : notifications.map((item, idx) => (
-                                                <div key={idx} className="px-4 py-3 border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-white/5">
-                                                    <p className="text-xs font-bold text-gray-800 dark:text-slate-200">{item.title}</p>
-                                                    <p className="text-[10px] text-gray-500">{item.status}</p>
+                                        <div className="max-h-[320px] overflow-y-auto">
+                                            {notifications.length === 0 ? (
+                                                <div className="flex flex-col items-center justify-center py-8 text-center px-4">
+                                                    <div className="w-10 h-10 rounded-full bg-gray-50 dark:bg-white/5 flex items-center justify-center mb-2">
+                                                        <Bell size={18} className="text-gray-400 dark:text-slate-600" />
+                                                    </div>
+                                                    <p className="text-xs font-bold text-gray-900 dark:text-white">All caught up!</p>
+                                                    <p className="text-[10px] text-gray-500 dark:text-slate-500 mt-0.5">No new notifications to show</p>
                                                 </div>
-                                            ))}
+                                            ) : (
+                                                notifications.map((item, idx) => {
+                                                    const getStyle = (type) => {
+                                                        const styles = {
+                                                            Order: { icon: Package, color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-500/10', border: 'border-blue-100 dark:border-blue-500/20' },
+                                                            Document: { icon: FileText, color: 'text-purple-600 dark:text-purple-400', bg: 'bg-purple-50 dark:bg-purple-500/10', border: 'border-purple-100 dark:border-purple-500/20' },
+                                                            Support: { icon: Headphones, color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-500/10', border: 'border-amber-100 dark:border-amber-500/20' },
+                                                            System: { icon: Info, color: 'text-gray-600 dark:text-gray-400', bg: 'bg-gray-50 dark:bg-gray-500/10', border: 'border-gray-100 dark:border-gray-500/20' }
+                                                        };
+                                                        return styles[item.type] || styles.System;
+                                                    };
+
+                                                    const style = getStyle(item.type);
+                                                    const Icon = style.icon;
+
+                                                    return (
+                                                        <div key={idx} className={`px-4 py-3 border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group cursor-pointer ${!item.isRead ? 'bg-blue-50/30 dark:bg-blue-900/5' : ''}`}>
+                                                            <div className="flex gap-3">
+                                                                <div className={`mt-0.5 w-8 h-8 rounded-lg ${style.bg} ${style.border} border flex items-center justify-center flex-shrink-0`}>
+                                                                    <Icon size={14} className={style.color} />
+                                                                </div>
+                                                                <div className="flex-1 min-w-0">
+                                                                    <div className="flex justify-between items-start gap-2">
+                                                                        <p className={`text-xs font-bold ${!item.isRead ? 'text-gray-900 dark:text-white' : 'text-gray-700 dark:text-slate-300'}`}>{item.title}</p>
+                                                                        <span className="text-[10px] text-gray-400 dark:text-slate-500 whitespace-nowrap">{formatTimeAgo(item.createdAt)}</span>
+                                                                    </div>
+                                                                    <p className="text-[11px] text-gray-500 dark:text-slate-400 leading-tight mt-0.5 line-clamp-2">{item.message}</p>
+                                                                </div>
+                                                                {!item.isRead && (
+                                                                    <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-blue-500 flex-shrink-0 shadow-sm shadow-blue-500/50"></div>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })
+                                            )}
                                         </div>
                                     </motion.div>
                                 )}
@@ -227,7 +287,17 @@ const Navbar = () => {
                                         <div className="p-1">
                                             <Link to="/profile" className="flex items-center gap-2 w-full px-3 py-2 text-xs font-bold text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg"><User size={14} /> My Profile</Link>
                                             <Link to="/digital-id" className="flex items-center gap-2 w-full px-3 py-2 text-xs font-bold text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg"><Activity size={14} /> Digital ID</Link>
-                                            <button onClick={handleLogout} className="flex items-center gap-2 w-full px-3 py-2 text-xs font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg"><LogOut size={14} /> Sign Out</button>
+                                            <button
+                                                onClick={handleLogout}
+                                                disabled={isLoggingOut}
+                                                className="flex items-center gap-2 w-full px-3 py-2 text-xs font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                                            >
+                                                {isLoggingOut ? (
+                                                    <><div className="w-3.5 h-3.5 border-2 border-red-600 border-t-transparent rounded-full animate-spin"></div> Signing out...</>
+                                                ) : (
+                                                    <><LogOut size={14} /> Sign Out</>
+                                                )}
+                                            </button>
                                         </div>
                                     </motion.div>
                                 )}
@@ -326,13 +396,35 @@ const Navbar = () => {
                                         </div>
                                         {notifications.length > 0 ? (
                                             <div className="space-y-2 mt-2">
-                                                {notifications.slice(0, 3).map((n, i) => (
-                                                    <div key={i} className="text-xs p-2 bg-white dark:bg-black rounded border border-gray-100 dark:border-gray-800">
-                                                        <p className="font-semibold text-gray-800 dark:text-gray-200 truncate">{n.title}</p>
-                                                        <p className="text-[10px] text-gray-500">{n.status}</p>
-                                                    </div>
-                                                ))}
-                                                <button onClick={clearNotifications} className="text-[10px] text-red-500 hover:underline w-full text-center mt-1">Clear All</button>
+                                                {notifications.slice(0, 3).map((item, idx) => {
+                                                    const getStyle = (type) => {
+                                                        const styles = {
+                                                            Order: { icon: Package, color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-500/10', border: 'border-blue-100 dark:border-blue-500/20' },
+                                                            Document: { icon: FileText, color: 'text-purple-600 dark:text-purple-400', bg: 'bg-purple-50 dark:bg-purple-500/10', border: 'border-purple-100 dark:border-purple-500/20' },
+                                                            Support: { icon: Headphones, color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-500/10', border: 'border-amber-100 dark:border-amber-500/20' },
+                                                            System: { icon: Info, color: 'text-gray-600 dark:text-gray-400', bg: 'bg-gray-50 dark:bg-gray-500/10', border: 'border-gray-100 dark:border-gray-500/20' }
+                                                        };
+                                                        return styles[type] || styles.System;
+                                                    };
+                                                    const style = getStyle(item.type);
+                                                    const Icon = style.icon;
+
+                                                    return (
+                                                        <div key={idx} className="flex gap-3 p-2 bg-white dark:bg-black rounded-lg border border-gray-100 dark:border-gray-800">
+                                                            <div className={`w-8 h-8 rounded-lg ${style.bg} ${style.border} border flex items-center justify-center flex-shrink-0`}>
+                                                                <Icon size={14} className={style.color} />
+                                                            </div>
+                                                            <div className="flex-1 min-w-0">
+                                                                <div className="flex justify-between items-start gap-2">
+                                                                    <p className="text-xs font-bold text-gray-900 dark:text-white truncate">{item.title}</p>
+                                                                    <span className="text-[9px] text-gray-400 whitespace-nowrap">{formatTimeAgo(item.createdAt)}</span>
+                                                                </div>
+                                                                <p className="text-[10px] text-gray-500 dark:text-slate-400 leading-tight mt-0.5 line-clamp-2">{item.message}</p>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+                                                <button onClick={clearNotifications} className="text-[10px] text-red-500 font-bold uppercase tracking-wider hover:underline w-full text-center mt-2">Clear All</button>
                                             </div>
                                         ) : (
                                             <p className="text-xs text-gray-400 italic">No new notifications</p>
@@ -377,9 +469,14 @@ const Navbar = () => {
 
                                 <button
                                     onClick={handleLogout}
-                                    className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10"
+                                    disabled={isLoggingOut}
+                                    className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    <LogOut size={16} /> Log Out
+                                    {isLoggingOut ? (
+                                        <><div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin"></div> Signing out...</>
+                                    ) : (
+                                        <><LogOut size={16} /> Log Out</>
+                                    )}
                                 </button>
                             </div>
                         </motion.div>

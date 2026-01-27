@@ -40,7 +40,7 @@ const AdminDashboard = () => {
         if (!background) setLoading(true);
         try {
             const [ordersRes, requestsRes] = await Promise.all([
-                axios.get(`${API_URL}/api/orders`, { withCredentials: true }),
+                axios.get(`${API_URL}/api/orders/all`, { withCredentials: true }), // CORRECTED: fetching ALL orders
                 axios.get(`${API_URL}/api/requests`, { withCredentials: true })
             ]);
             setOrders(ordersRes.data);
@@ -201,11 +201,17 @@ const AdminDashboard = () => {
                                                     <span className="font-mono text-xs text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 px-1.5 py-0.5 rounded">#{order._id.slice(-6).toUpperCase()}</span>
                                                     <StatusBadge status={order.status} />
                                                 </div>
-                                                <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">{order.studentDetails?.name || 'Unknown User'}</h3>
-                                                <p className="text-xs font-mono text-gray-500 dark:text-slate-500 mt-0.5">{order.studentDetails?.registerNumber}</p>
+                                                <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                                                    {order.studentDetails?.name || order.user?.name || 'Unknown User'}
+                                                </h3>
+                                                <p className="text-xs font-mono text-gray-500 dark:text-slate-500 mt-0.5">
+                                                    {order.studentDetails?.registerNumber || order.user?.registerNumber || '-'}
+                                                </p>
 
                                                 <div className="flex gap-2 mt-3 text-[10px] text-gray-500 dark:text-slate-400 font-mono">
-                                                    <span className="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">{order.studentDetails?.classSection || 'N/A'}</span>
+                                                    <span className="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">
+                                                        {order.studentDetails?.classSection || order.user?.classSection || 'N/A'}
+                                                    </span>
                                                     <span className="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">{new Date(order.createdAt).toLocaleDateString()}</span>
                                                 </div>
                                             </div>
