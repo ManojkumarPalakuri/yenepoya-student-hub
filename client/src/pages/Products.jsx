@@ -17,8 +17,8 @@ const Products = () => {
 
     const fetchOrders = async () => {
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-            const { data } = await axios.get(`${apiUrl}/api/orders/myorders`, { withCredentials: true });
+            const apiUrl = API_URL;
+            const { data } = await axios.get(`${apiUrl}/api/orders`, { withCredentials: true });
             setOrders(data);
             setShowOrders(true);
         } catch (error) {
