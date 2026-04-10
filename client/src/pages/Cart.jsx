@@ -1,4 +1,5 @@
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import { Trash2, Plus, Minus, ShoppingBag, CreditCard, ArrowRight, Package } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -8,11 +9,18 @@ import { API_URL } from '../config';
 
 const Cart = () => {
     const { cartItems, removeFromCart, updateQuantity, total, clearCart } = useCart();
+    const { user } = useAuth();
     const [submitting, setSubmitting] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
     const navigate = useNavigate(); // Added navigate hook
 
     const handleCheckout = async () => {
+        if (user?.isGuest) {
+            alert('Please register with your campus email id to order.');
+            navigate('/login');
+            return;
+        }
+
         setSubmitting(true);
         try {
             const apiUrl = API_URL;

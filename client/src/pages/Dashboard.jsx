@@ -224,7 +224,7 @@ const Dashboard = () => {
 
             {/* Incomplete Profile Warning Modal */}
             <AnimatePresence>
-                {(!user.registerNumber || !user.campusId) && (
+                {!user.isGuest && (!user.registerNumber || !user.campusId) && (
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}

@@ -5,8 +5,8 @@ const { protect, admin } = require('../middleware/auth');
 
 // @route   GET /api/products
 // @desc    Get all products
-// @access  Public (or Private? Let's keep it Private for students)
-router.get('/', protect, async (req, res) => {
+// @access  Public
+router.get('/', async (req, res) => {
     try {
         const products = await Product.find({});
         res.json(products);

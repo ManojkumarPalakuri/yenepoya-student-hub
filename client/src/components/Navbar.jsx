@@ -31,7 +31,7 @@ const Navbar = () => {
 
     // Fetch Notifications
     const fetchNotifications = async () => {
-        if (!user) return;
+        if (!user || user.isGuest) return;
         try {
             const { data } = await axios.get(`${API_URL}/api/notifications`, { withCredentials: true });
             if (Array.isArray(data)) {

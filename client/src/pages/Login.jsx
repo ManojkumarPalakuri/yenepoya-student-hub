@@ -35,7 +35,7 @@ const Login = () => {
     const [showMobileLogin, setShowMobileLogin] = useState(false);
 
     // Auth context and navigation
-    const { login } = useAuth();
+    const { login, loginAsGuest } = useAuth();
     const { theme, toggleTheme } = useTheme();
     const navigate = useNavigate();
 
@@ -367,6 +367,14 @@ const Login = () => {
                                     <ArrowRight size={18} className="stroke-[2.5px]" />
                                 </motion.button>
 
+                                <motion.button
+                                    whileTap={{ scale: 0.98 }}
+                                    onClick={() => { loginAsGuest(); navigate('/'); }}
+                                    className="w-full bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-white border border-slate-200 dark:border-white/10 font-bold py-4 rounded-2xl flex items-center justify-center gap-3 text-[16px] transition-colors hover:bg-slate-200 dark:hover:bg-white/10 mt-3"
+                                >
+                                    <span>Explore as Guest</span>
+                                </motion.button>
+
                                 <div className="flex items-center justify-center px-2 pt-2 pb-2">
                                     <p className="text-[11px] font-medium text-slate-400 dark:text-slate-600">v2.0 • Secure Portal</p>
                                 </div>
@@ -452,6 +460,9 @@ const Login = () => {
                                                     </div>
                                                     <button type="submit" disabled={isLoading} className="w-full mt-4 bg-blue-600 active:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 text-[15px] transition-transform active:scale-[0.98]">
                                                         {isLoading ? <Loader2 className="animate-spin w-5 h-5" /> : "Sign In"}
+                                                    </button>
+                                                    <button type="button" onClick={() => { loginAsGuest(); navigate('/'); }} className="w-full mt-3 bg-slate-100 active:bg-slate-200 dark:bg-white/5 dark:active:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 text-[15px] transition-all">
+                                                        Explore as Guest
                                                     </button>
                                                 </form>
 
@@ -558,7 +569,8 @@ const Login = () => {
                                     <form onSubmit={handleLogin} className="space-y-6">
                                         <div className="space-y-2"><label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest pl-1">University Email</label><div className="relative"><Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" /><input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full bg-slate-50 dark:bg-[#0B1220] border border-slate-200 dark:border-white/10 rounded-xl py-3 pl-11 pr-4 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 outline-none transition-all placeholder:text-slate-400" placeholder="name@yenepoya.edu.in" required /></div></div>
                                         <div className="space-y-2"><div className="flex justify-between pl-1"><label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Password</label><button type="button" onClick={() => switchView('forgot-password', 1)} className="text-[11px] font-bold text-blue-500 hover:text-blue-400">Forgot?</button></div><div className="relative"><Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" /><input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full bg-slate-50 dark:bg-[#0B1220] border border-slate-200 dark:border-white/10 rounded-xl py-3 pl-11 pr-4 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 outline-none transition-all" placeholder="••••••••" required /></div></div>
-                                        <button type="submit" disabled={isLoading} className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl shadow-lg flex items-center justify-center gap-2">{isLoading ? <Loader2 className="animate-spin w-5 h-5" /> : <><span className="hidden lg:inline">Continue</span><ArrowRight className="w-5 h-5" /></>}</button>
+                                        <button type="submit" disabled={isLoading} className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl shadow-lg flex items-center justify-center gap-2"><span className="hidden lg:inline">Continue</span><ArrowRight className="w-5 h-5" /></button>
+                                        <button type="button" onClick={() => { loginAsGuest(); navigate('/'); }} className="w-full bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all">Explore as Guest</button>
                                     </form>
                                     <div className="pt-4 text-center"><p className="text-sm text-slate-500">Don't have an account? <button onClick={() => switchView('signup', 1)} className="text-blue-500 font-bold hover:underline">Sign up</button></p></div>
                                 </motion.div>

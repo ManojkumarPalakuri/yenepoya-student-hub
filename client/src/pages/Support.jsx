@@ -22,6 +22,11 @@ const Support = () => {
     const categories = ['Academic', 'Technical', 'General', 'Feedback'];
 
     const fetchQueries = async () => {
+        if (user?.isGuest) {
+            setQueries([]);
+            setLoading(false);
+            return;
+        }
         try {
             const apiUrl = API_URL;
             const { data } = await axios.get(`${apiUrl}/api/support/my-queries`, { withCredentials: true });
@@ -60,6 +65,12 @@ const Support = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
+        if (user?.isGuest) {
+            toast.success('register with your university mail to submit a ticket', { duration: 4000 });
+            return;
+        }
+
         setSubmitting(true);
         try {
             const apiUrl = API_URL;

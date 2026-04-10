@@ -11,6 +11,19 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     const checkUserLoggedIn = async () => {
+        if (localStorage.getItem('isGuest') === 'true') {
+            const guestUser = {
+                id: 'guest',
+                name: 'Guest User',
+                email: 'guest@yenepoya.edu.in',
+                role: 'student',
+                isGuest: true
+            };
+            setUser(guestUser);
+            setLoading(false);
+            return;
+        }
+
         try {
             const { data } = await axios.get(`${API_URL}/api/auth/profile?t=${Date.now()}`, { withCredentials: true });
             setUser(data);
@@ -60,6 +73,18 @@ export const AuthProvider = ({ children }) => {
         setUser(userData);
     };
 
+    const loginAsGuest = () => {
+        localStorage.setItem('isGuest', 'true');
+        const guestUser = {
+            id: 'guest',
+            name: 'Guest User',
+            email: 'guest@yenepoya.edu.in',
+            role: 'student', // allows PrivateRoute to pass
+            isGuest: true
+        };
+        setUser(guestUser);
+    };
+
     const logout = async () => {
         try {
             await axios.post(`${API_URL}/api/auth/logout`, {}, { withCredentials: true });
@@ -67,6 +92,7 @@ export const AuthProvider = ({ children }) => {
             console.error('Logout failed', e);
         }
         localStorage.removeItem('token');
+        localStorage.removeItem('isGuest');
         delete axios.defaults.headers.common['Authorization'];
         setUser(null);
     };
@@ -75,6 +101,7 @@ export const AuthProvider = ({ children }) => {
         user,
         loading,
         login,
+        loginAsGuest,
         logout,
         checkUserLoggedIn
     };

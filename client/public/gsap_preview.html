@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GSAP Student Login Animation</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #f0f4f8;
+            font-family: sans-serif;
+            overflow: hidden;
+        }
+
+        .scene-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            height: 500px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .abstract-blob {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            border-radius: 50% 30% 70% 40% / 30% 60% 40% 70%;
+            opacity: 0.2;
+            z-index: 0;
+            filter: blur(40px);
+        }
+
+        .student-illustration {
+            width: 250px;
+            height: auto;
+            z-index: 10;
+            /* Explicitly setting transform-origin for rotation */
+            transform-origin: center center;
+            /* Will-change for GPU hints */
+            will-change: transform;
+        }
+
+        /* Mockup Student SVG */
+        svg {
+            overflow: visible;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="scene-container">
+        <div class="abstract-blob"></div>
+
+        <!-- Simple Student SVG Placeholder -->
+        <svg class="student-illustration" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="100" cy="100" r="80" fill="#4A90E2" />
+            <path d="M60 100 Q100 150 140 100" stroke="white" stroke-width="10" fill="none" stroke-linecap="round" />
+            <circle cx="75" cy="80" r="10" fill="white" />
+            <circle cx="125" cy="80" r="10" fill="white" />
+            <rect x="70" y="140" width="60" height="40" rx="5" fill="#2C3E50" />
+            <text x="50%" y="170" text-anchor="middle" fill="white" font-size="14" font-family="Arial">Student</text>
+        </svg>
+    </div>
+
+    <script>
+        // Wait for DOM
+        document.addEventListener("DOMContentLoaded", () => {
+            const target = document.querySelector(".student-illustration");
+            const blob = document.querySelector(".abstract-blob");
+
+            // 1. Floating Animation (Vertical)
+            gsap.to(target, {
+                y: -20, // Float up 20px
+                duration: 2.5,
+                ease: "sine.inOut",
+                repeat: -1,
+                yoyo: true
+            });
+
+            // 2. Gentle Breathing (Scale)
+            gsap.to(target, {
+                scale: 1.03, // Slight scale up
+                duration: 3,
+                ease: "sine.inOut",
+                repeat: -1,
+                yoyo: true,
+                delay: 0.5 // Offset slightly for organic feel
+            });
+
+            // 3. Slow Rotation
+            gsap.to(target, {
+                rotation: 3, // Rotate 3 degrees
+                duration: 4,
+                ease: "sine.inOut",
+                repeat: -1,
+                yoyo: true // Back to 0 then to -3? No, yoyo goes back to start.
+                // To do -3 to 3, we start at 0. Simple yoyo 0 -> 3 -> 0 is fine, 
+                // OR we can tween from -3 to 3 if we set initial state.
+            });
+
+            // Refine Rotation: Swing from -2 to 2
+            gsap.fromTo(target,
+                { rotation: -2 },
+                {
+                    rotation: 2,
+                    duration: 5,
+                    ease: "sine.inOut",
+                    repeat: -1,
+                    yoyo: true
+                }
+            );
+
+            // Optional: Background Blob Animation (slower, different phase)
+            gsap.to(blob, {
+                scale: 1.1,
+                rotation: 90,
+                duration: 8,
+                ease: "sine.inOut",
+                repeat: -1,
+                yoyo: true
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -41,6 +41,13 @@ const Profile = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
+        if (user?.isGuest) {
+            setIsEditing(false);
+            toast.success('register with your university mail to order', { duration: 4000 });
+            return;
+        }
+
         setLoading(true);
         try {
             const apiUrl = API_URL;
