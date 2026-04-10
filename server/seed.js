@@ -9,49 +9,49 @@ const products = [
         name: 'University Tie',
         price: 150,
         category: 'Merchandise',
-        imageUrl: 'https://placehold.co/300x300?text=University+Tie',
+        imageUrl: '/products/tie.svg',
         description: 'Official Yenepoya University Tie'
     },
     {
         name: 'Uniform Shirt',
         price: 500,
         category: 'Uniform',
-        imageUrl: 'https://placehold.co/300x300?text=Uniform+Shirt',
+        imageUrl: '/products/shirt.svg',
         description: 'Standard issue uniform shirt'
     },
     {
         name: 'University T-Shirt',
         price: 350,
         category: 'Merchandise',
-        imageUrl: 'https://placehold.co/300x300?text=University+T-Shirt',
+        imageUrl: '/products/tshirt.svg',
         description: 'Casual T-Shirt with Logo'
     },
     {
         name: 'Shoes',
         price: 900,
         category: 'Uniform',
-        imageUrl: 'https://placehold.co/300x300?text=Shoes',
+        imageUrl: '/products/shoes.svg',
         description: 'Black formal shoes'
     },
     {
         name: 'Record Notebook',
         price: 120,
         category: 'Stationery',
-        imageUrl: 'https://placehold.co/300x300?text=Record+Notebook',
+        imageUrl: '/products/notebook.svg',
         description: 'A4 Record Notebook'
     },
     {
         name: 'ID Card Holder',
         price: 150,
         category: 'Merchandise',
-        imageUrl: 'https://placehold.co/300x300?text=ID+Card+Holder',
+        imageUrl: '/products/id-holder.svg',
         description: 'Official Yenepoya ID Card Holder with Strap'
     },
     {
         name: 'University Tag',
         price: 80,
         category: 'Merchandise',
-        imageUrl: 'https://placehold.co/300x300?text=University+Tag',
+        imageUrl: '/products/tag.svg',
         description: 'Premium University Lanyard Tag'
     }
 ];
