@@ -13,6 +13,7 @@ import Navbar from './components/Navbar';
 import PrivateRoute from './components/PrivateRoute';
 
 import { Toaster } from 'react-hot-toast';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -69,6 +70,7 @@ function App() {
           </Routes>
         </Layout>
       </div>
+      <SpeedInsights />
     </Router>
   );
 }
